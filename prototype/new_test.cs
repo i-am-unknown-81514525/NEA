@@ -2,27 +2,35 @@ using System;
 using System.Runtime.InteropServices;
 
 static class WindowConsoleHandler {
-    [DllImport("libstdin_handler.dll", SetLastError = true)]
-    private static extern bool init();
+    [DllImport("libstdin_handler", SetLastError = true)]
+    private static extern int init();
 
     [DllImport("libstdin_handler", SetLastError = true)]
     private static extern byte read_stdin();
 
-    public static int readStdin() {
-        return (int)(Console.ReadKey(true).KeyChar);
-    }
+    [DllImport("libstdin_handler", SetLastError = true)]
+    private static extern int reset();
+    
+    public static int readStdin() => (int)read_stdin();
 
     public static void Setup() {
         init();
+    }
+
+    public static void Reset() {
+        reset();
     }
 }
 
 static class PosixConsoleHandler {
     [DllImport("libstdin_handler", SetLastError = true)]
-    private static extern bool init();
+    private static extern int init();
 
     [DllImport("libstdin_handler", SetLastError = true)]
     private static extern byte read_stdin();
+
+    [DllImport("libstdin_handler", SetLastError = true)]
+    private static extern int reset();
 
     public static int readStdin() => (int)read_stdin();
 
@@ -42,6 +50,10 @@ static class PosixConsoleHandler {
         addPath("DYLD_FALLBACK_LIBRARY_PATH");
         init();
     }
+
+    public static void Reset() {
+        reset();
+    }
 }
 
 static class ConsoleIntermediateHandler {
@@ -60,6 +72,14 @@ static class ConsoleIntermediateHandler {
             return PosixConsoleHandler.readStdin();
         }
     }
+
+    public static void Reset() {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+            WindowConsoleHandler.Reset();
+        } else {
+            PosixConsoleHandler.Reset();
+        }
+    }
 }
 
 internal class Program {
@@ -72,7 +92,7 @@ internal class Program {
             switch (v)
             {
                 case 3:
-                  Console.Write(ToANSI("?1049l"));
+                  ConsoleIntermediateHandler.Reset();
                   return ;
                 case 97:
                     Console.Write(ToANSI("6n"));
