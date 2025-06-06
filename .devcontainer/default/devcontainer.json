@@ -2,7 +2,7 @@
   "customizations": {
     "codespaces": {
       "repositories": {
-        "i-am-unknown-81514525/ui": {
+        "i-am-unknown-81514525/csharp.consoleUI": {
           "permissions": "write-all"
         }
       }
