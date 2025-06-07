@@ -1,0 +1,3 @@
+{
+    "rust-analyzer.linkedProjects": ["ui/stdin_handler/Cargo.toml"]
+}
