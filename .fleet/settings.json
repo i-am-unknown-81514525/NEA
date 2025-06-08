@@ -1,3 +1,9 @@
 {
-    "rust-analyzer.linkedProjects": ["ui/stdin_handler/Cargo.toml"]
+    "rust-analyzer.linkedProjects": ["ui/stdin_handler/Cargo.toml"],
+    "plugins": [
+        {
+            "type": "add",
+            "pluginName": "com.github.catppuccin.fleet"
+        }
+    ]
 }
