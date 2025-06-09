@@ -5,5 +5,6 @@
             "type": "add",
             "pluginName": "com.github.catppuccin.fleet"
         }
-    ]
+    ],
+    "toolchains": []
 }

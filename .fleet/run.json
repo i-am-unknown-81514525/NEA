@@ -1,0 +1,44 @@
+{
+    "configurations": [
+//        {
+//            "type": "dotnet",
+//            "name": "NEA full C# build",
+//            "projectPath": "NEA.sln",
+//            "args": []
+//        },
+        {
+            "type": "command",
+            "name": "NEA full C# build",
+            "workingDir": "",
+            "program": "/usr/bin/msbuild",
+            "args": ["-maxcpucount", "/property:Configuration=Debug" ,"/t:Build", "NEA.sln"]
+        },
+        {
+            "type": "command",
+            "name": "Full build",
+            "workingDir": "",
+            "program": "bash",
+            "args": ["build.sh"]
+        },
+//        {
+//            "type": "dotnet",
+//            "name": "NEA application build",
+//            "projectPath": "NEA/NEA.csproj",
+//            "args": ["||", "true"]
+//        },
+        {
+            "type": "command",
+            "name": "NEA application build",
+            "program": "/usr/bin/msbuild",
+            "workingDir": "",
+            "args": ["-maxcpucount", "/property:Configuration=Debug", "/t:Build", "NEA/NEA.csproj"]
+        },
+        {
+            "type": "command",
+            "name": "NEA/ui C# build",
+            "program": "/usr/bin/msbuild",
+            "workingDir": "",
+            "args": ["-maxcpucount", "/property:Configuration=Debug", "/t:Build", "ui/ui.csproj"]
+        }
+    ]
+}
