@@ -1,11 +1,11 @@
 {
     "configurations": [
-//        {
-//            "type": "dotnet",
-//            "name": "NEA full C# build",
-//            "projectPath": "NEA.sln",
-//            "args": []
-//        },
+        {
+            "type": "dotnet",
+            "name": "Native: NEA full C# build",
+            "projectPath": "NEA.sln",
+            "args": []
+        },
         {
             "type": "command",
             "name": "NEA full C# build",
@@ -20,12 +20,12 @@
             "program": "bash",
             "args": ["build.sh"]
         },
-//        {
-//            "type": "dotnet",
-//            "name": "NEA application build",
-//            "projectPath": "NEA/NEA.csproj",
-//            "args": ["||", "true"]
-//        },
+        {
+            "type": "dotnet",
+            "name": "Native: NEA application build",
+            "projectPath": "NEA/NEA.csproj",
+            "args": ["||", "true"]
+        },
         {
             "type": "command",
             "name": "NEA application build",
