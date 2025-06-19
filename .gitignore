@@ -729,3 +729,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 lib/
+
+.wakatime-project
