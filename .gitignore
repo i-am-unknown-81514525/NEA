@@ -731,3 +731,6 @@ dist
 lib/
 
 .wakatime-project
+
+playground/
+log-loc
