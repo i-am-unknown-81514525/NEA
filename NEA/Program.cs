@@ -13,7 +13,7 @@ namespace NEA
     {
         static void Main(string[] args)
         {
-            Prototype.Setup();
+            ButtonTest.Setup();
         }
     }
 }
