@@ -1,0 +1,10 @@
+{
+    "lsp": {
+        "omnisharp": {
+            "binary": {
+                "path": "/home/user/omnisharp_tmp/run",
+                "arguments": ["-lsp"]
+            }
+        }
+    }
+}

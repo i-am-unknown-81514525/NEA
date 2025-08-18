@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using ui;
 using ui.core;
 using ui.test;
+using ui.components;
+using ui.components.chainExt;
+using NEA.components;
 
 namespace NEA
 {
@@ -13,7 +16,26 @@ namespace NEA
     {
         static void Main(string[] args)
         {
-            GroupItemTest.Setup();
+            // Run();
+            ComplexTest.Setup();
+        }
+
+        static void Run()
+        {
+            Switcher switcher = new Switcher();
+            App app = new App(
+                switcher
+            );
+            switcher.AddMulti(
+                new[] {
+                    new NEA.components.MainMenu(switcher)
+                }
+            );
+            app.WithExitHandler((appObj) =>
+            {
+                Console.WriteLine(appObj.Debug_WriteStructure());
+                Console.WriteLine(ui.DEBUG.DebugStore.ToString());
+            }).Run();
         }
     }
 }
