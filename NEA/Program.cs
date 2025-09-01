@@ -16,8 +16,8 @@ namespace NEA
     {
         static void Main(string[] args)
         {
-            // Run();
-            ComplexTest.Setup();
+            Run();
+            // Prototype.Setup();
         }
 
         static void Run()
@@ -27,11 +27,25 @@ namespace NEA
                 switcher
             );
             switcher.AddMulti(
-                new[] {
-                    new NEA.components.MainMenu(switcher)
+                new IComponent[] {
+                    new NEA.components.MainMenu(switcher),
+                    new VerticalGroupComponent() {
+                        new MultiLineInputField(),
+                        (new Button("Back")
+                            .WithHandler(
+                                (_)=>switcher.SwitchTo(0)
+                            ), 1)
+                    },
+                    new VerticalGroupComponent() {
+                        new FormattedTable((5, 5)) {},
+                        (new Button("Back")
+                            .WithHandler(
+                                (_)=>switcher.SwitchTo(0)
+                            ), 1)
+                    }
                 }
             );
-            app.WithExitHandler((appObj) =>
+            app.WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
                 Console.WriteLine(ui.DEBUG.DebugStore.ToString());
