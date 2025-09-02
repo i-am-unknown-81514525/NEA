@@ -37,7 +37,13 @@ namespace NEA
                             ), 1)
                     },
                     new VerticalGroupComponent() {
-                        new FormattedTable((5, 5)) {},
+                        (
+                            new FormattedTable(
+                                (5, 5)
+                            ) {}
+                        ).WithComponentConstructor(
+                            () => new SingleLineInputField().WithChange((c) => c.underline = false)
+                        ),
                         (new Button("Back")
                             .WithHandler(
                                 (_)=>switcher.SwitchTo(0)
