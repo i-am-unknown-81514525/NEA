@@ -10,7 +10,10 @@ namespace NEA.components
             return new TableLocationStore();
         }
 
-        public SimplexTableauValueField(string content = "") : base(content) { }
+        public SimplexTableauValueField(string content = "") : base(content)
+        {
+            underline = false;
+        }
 
         // protected override void OnExitHandler()
         // {

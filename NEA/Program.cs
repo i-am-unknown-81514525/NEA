@@ -28,7 +28,7 @@ namespace NEA
             );
             switcher.AddMulti(
                 new IComponent[] {
-                    new NEA.components.MainMenu(switcher),
+                    new MainMenu(switcher),
                     new VerticalGroupComponent() {
                         new MultiLineInputField(),
                         (
@@ -42,21 +42,7 @@ namespace NEA
                         , 1)
                     },
                     new VerticalGroupComponent() {
-                        (
-                            new FormattedTable(
-                                (5, 5)
-                            ) {}
-                        ).WithComponentConstructor(
-                            (
-                               FormattedTable table, (int x, int y) loc) =>
-                            new SimplexTableauValueField().WithChange(
-                                (c) => {
-                                    c.underline = false;
-                                    c.store.loc = loc;
-                                    // c.store.parent = table;
-                                }
-                            )
-                        ).WithChange((c) => c[4, 0] = new TextLabel("RHS")),
+                        new SimplexTableauInput(),
                         (
                             new HorizontalGroupComponent() {
                                 new Button("Back")
