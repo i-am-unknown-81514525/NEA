@@ -20,21 +20,21 @@ namespace NEA.components
 
         public override string AsLatex()
         {
-            bool ran = false;
+            //bool ran = false;
             if (content == "")
             {
                 content = "0";
-                ran = true;
+                //ran = true;
             }
-            Console.WriteLine($"{content}, {content.Length}, {content is null}, {content == ""}, {ran}");
+            //Console.WriteLine($"{content}, {content.Length}, {content is null}, {content == ""}, {ran}");
             if (Fraction.TryParse(content, out Fraction frac))
             {
                 return frac.AsLatex();
             }
-            else
-            {
-                Console.WriteLine($"Cannot parse '{content}' as a fraction");
-            }
+            //else
+            //{
+            //    Console.WriteLine($"Cannot parse '{content}' as a fraction");
+            //}
             return base.AsLatex();
         }
     }
