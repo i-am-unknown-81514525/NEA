@@ -31,10 +31,15 @@ namespace NEA
                     new NEA.components.MainMenu(switcher),
                     new VerticalGroupComponent() {
                         new MultiLineInputField(),
-                        (new Button("Back")
-                            .WithHandler(
-                                (_)=>switcher.SwitchTo(0)
-                            ), 1)
+                        (
+                            new HorizontalGroupComponent() {
+                                new Button("Back")
+                                    .WithHandler(
+                                        (_)=>switcher.SwitchTo(0)
+                                    ),
+                                new Button("Start")
+                            }
+                        , 1)
                     },
                     new VerticalGroupComponent() {
                         (
@@ -42,12 +47,25 @@ namespace NEA
                                 (5, 5)
                             ) {}
                         ).WithComponentConstructor(
-                            () => new SingleLineInputField().WithChange((c) => c.underline = false)
-                        ),
-                        (new Button("Back")
-                            .WithHandler(
-                                (_)=>switcher.SwitchTo(0)
-                            ), 1)
+                            (
+                               FormattedTable table, (int x, int y) loc) =>
+                            new SimplexTableauValueField().WithChange(
+                                (c) => {
+                                    c.underline = false;
+                                    c.store.loc = loc;
+                                    // c.store.parent = table;
+                                }
+                            )
+                        ).WithChange((c) => c[4, 0] = new TextLabel("RHS")),
+                        (
+                            new HorizontalGroupComponent() {
+                                new Button("Back")
+                                    .WithHandler(
+                                        (_)=>switcher.SwitchTo(0)
+                                    ),
+                                new Button("Start")
+                            }
+                        , 1)
                     }
                 }
             );

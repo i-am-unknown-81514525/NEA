@@ -67,6 +67,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="components\*.cs" />
+    <Compile Include="math\*.cs" />
+    <Compile Include="store\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

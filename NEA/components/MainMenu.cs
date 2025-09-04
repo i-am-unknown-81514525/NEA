@@ -12,9 +12,9 @@ namespace NEA.components
                 new VerticalGroupComponent() {
                     (new Frame().WithInner(new Button("Button 1")), new Fraction(1, 4)),
                     (new Padding(), 1),
-                    (new Frame().WithInner(new Button("Test table").WithHandler((_)=>switcher.SwitchTo(2))), new Fraction(1, 4)),
+                    (new Frame().WithInner(new Button("Tableau input").WithHandler((_)=>switcher.SwitchTo(2))), new Fraction(1, 4)),
                     (new Padding(), 1),
-                    (new Frame().WithInner(new Button("Test multi-line input").WithHandler((_)=>switcher.SwitchTo(1))), new Fraction(1, 4)),
+                    (new Frame().WithInner(new Button("LP model input").WithHandler((_)=>switcher.SwitchTo(1))), new Fraction(1, 4)),
                     // (new Frame().WithInner(new Button("Button 3")), new Fraction(1, 4)),
                     (new Padding(), 1),
                     (new Frame().WithInner(new ExitButton("Exit")), new Fraction(1, 4)),
