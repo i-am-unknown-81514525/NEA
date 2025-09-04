@@ -1,0 +1,207 @@
+App (allocX=219, allocY=22) - 
+    Switcher (x=0, y=0, allocX=219, allocY=22) - [3 total child components, Active Index: 2]
+        VerticalGroupComponent (x=0, y=0, allocX=219, allocY=22) - 
+            SimplexTableauInput (x=0, y=0, allocX=219, allocY=21) - 
+                VerticalGroupComponent (x=0, y=0, allocX=219, allocY=21) - 
+                    SimplexInputTable (x=0, y=0, allocX=219, allocY=20) - 
+                        FormattedTable (x=0, y=0, allocX=219, allocY=20) - 
+                            LatexTable (x=0, y=0, allocX=219, allocY=20) - horizontal_row=1 vertical_column=7, 1, 3, 5
+                                Table (x=0, y=0, allocX=219, allocY=20) - 
+                                    HorizontalGroupComponent (x=0, y=0, allocX=219, allocY=20) - 
+                                        VerticalGroupComponent (x=0, y=0, allocX=43, allocY=20) - 
+                                            Container (x=0, y=0, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=43, allocY=1) - 
+                                                HorizontalBar (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=43, y=0, allocX=1, allocY=20) - 
+                                            Container (x=0, y=0, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=1, allocY=1) - 
+                                                TextLabel (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=44, y=0, allocX=43, allocY=20) - 
+                                            Container (x=0, y=0, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=43, allocY=1) - 
+                                                HorizontalBar (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=87, y=0, allocX=1, allocY=20) - 
+                                            Container (x=0, y=0, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=1, allocY=1) - 
+                                                TextLabel (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=88, y=0, allocX=43, allocY=20) - 
+                                            Container (x=0, y=0, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=43, allocY=1) - 
+                                                HorizontalBar (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=131, y=0, allocX=1, allocY=20) - 
+                                            Container (x=0, y=0, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=1, allocY=1) - 
+                                                TextLabel (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=132, y=0, allocX=43, allocY=20) - 
+                                            Container (x=0, y=0, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=43, allocY=1) - 
+                                                HorizontalBar (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=175, y=0, allocX=1, allocY=20) - 
+                                            Container (x=0, y=0, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=1, allocY=1) - 
+                                                TextLabel (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=1, allocY=1) - 
+                                                VerticalBar (x=0, y=0, allocX=1, allocY=1) - 
+                                                
+                                        VerticalGroupComponent (x=176, y=0, allocX=43, allocY=20) - 
+                                            Container (x=0, y=0, allocX=43, allocY=1) - 
+                                                TextLabel (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=1, allocX=43, allocY=1) - 
+                                                HorizontalBar (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=2, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=3, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=4, allocX=43, allocY=1) - 
+                                                Padding (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                                            Container (x=0, y=5, allocX=43, allocY=1) - 
+                                                SimplexTableauValueField (x=0, y=0, allocX=43, allocY=1) - 
+                                                
+                    HorizontalGroupComponent (x=0, y=20, allocX=219, allocY=1) - 
+                        BoundedSpinner (x=0, y=0, allocX=109, allocY=1) - 
+                            HorizontalGroupComponent (x=0, y=0, allocX=109, allocY=1) - 
+                                TextLabel (x=0, y=0, allocX=51, allocY=1) - 
+                                
+                                DisableButton (x=51, y=0, allocX=3, allocY=1) - 
+                                
+                                TextLabel (x=54, y=0, allocX=52, allocY=1) - 
+                                
+                                DisableButton (x=106, y=0, allocX=3, allocY=1) - 
+                                
+                        BoundedSpinner (x=109, y=0, allocX=110, allocY=1) - 
+                            HorizontalGroupComponent (x=0, y=0, allocX=110, allocY=1) - 
+                                TextLabel (x=0, y=0, allocX=52, allocY=1) - 
+                                
+                                DisableButton (x=52, y=0, allocX=3, allocY=1) - 
+                                
+                                TextLabel (x=55, y=0, allocX=52, allocY=1) - 
+                                
+                                DisableButton (x=107, y=0, allocX=3, allocY=1) - 
+                                
+            HorizontalGroupComponent (x=0, y=21, allocX=219, allocY=1) - 
+                Button (x=0, y=0, allocX=109, allocY=1) - 
+                
+                Button (x=109, y=0, allocX=110, allocY=1) - 
+                

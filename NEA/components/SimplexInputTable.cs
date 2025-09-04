@@ -13,7 +13,12 @@ namespace NEA.components
 
         protected override FormattedTable InnerConstructor()
         {
-            var table = new FormattedTable((2, 2)).WithComponentConstructor((FormattedTable _) => new SimplexTableauValueField());
+            var table = new FormattedTable((2, 2)).WithComponentConstructor(
+                (FormattedTable _, (int x, int y) loc)
+                    => loc.y == 0 ?
+                        new SimplexTableauVariableField() :
+                        (IComponent)new SimplexTableauValueField()
+            );
             table[1, 0] = new TextLabel("RHS");
             return table;
         }
@@ -36,7 +41,10 @@ namespace NEA.components
             inner.InsertColumn(idx, amount);
             for (int y = 0; y < inner.GetSize().y; y++)
             {
-                inner[idx, y] = new SimplexTableauValueField();
+                if (y == 0)
+                    inner[idx, y] = new SimplexTableauVariableField();
+                else
+                    inner[idx, y] = new SimplexTableauValueField();
             }
         }
 

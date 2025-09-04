@@ -26,6 +26,7 @@ namespace NEA
             App app = new App(
                 switcher
             );
+            SimplexTableauInput tableau_input = new SimplexTableauInput();
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),
@@ -42,7 +43,7 @@ namespace NEA
                         , 1)
                     },
                     new VerticalGroupComponent() {
-                        new SimplexTableauInput(),
+                        tableau_input,
                         (
                             new HorizontalGroupComponent() {
                                 new Button("Back")
@@ -59,6 +60,7 @@ namespace NEA
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
                 Console.WriteLine(ui.DEBUG.DebugStore.ToString());
+                Console.WriteLine(tableau_input.table.AsLatex());
             }).Run();
         }
     }
