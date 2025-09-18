@@ -26,7 +26,7 @@ namespace NEA
             App app = new App(
                 switcher
             );
-            SimplexTableauInput tableau_input = new SimplexTableauInput();
+            TableauPage table_page = new TableauPage(switcher);
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),
@@ -42,25 +42,15 @@ namespace NEA
                             }
                         , 1)
                     },
-                    new VerticalGroupComponent() {
-                        tableau_input,
-                        (
-                            new HorizontalGroupComponent() {
-                                new Button("Back")
-                                    .WithHandler(
-                                        (_)=>switcher.SwitchTo(0)
-                                    ),
-                                new Button("Start")
-                            }
-                        , 1)
-                    }
+                    table_page
+                    
                 }
             );
             app.WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
                 Console.WriteLine(ui.DEBUG.DebugStore.ToString());
-                Console.WriteLine(tableau_input.table.AsLatex());
+                Console.WriteLine(table_page.tableau_input.table.AsLatex());
             }).Run();
         }
     }

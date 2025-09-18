@@ -15,6 +15,16 @@ namespace NEA.math
         public string[] vars;
         public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) meta;
 
+        public SimplexInterationRunner(SimplexStage stage, SimplexMode mode, Fraction[,] expressions, string[] vars)
+        {
+            this.stage = stage;
+            this.mode = mode;
+            step = SimplexStep.PICK_PIVOT_COLUMN;
+            this.expressions = expressions.Clone() as Fraction[,];
+            this.vars = vars.Clone() as string[];
+            meta = (-1, -1, null, new List<int>());
+        }
+
         public SimplexInterationRunner Clone()
         {
             return new SimplexInterationRunner
@@ -100,6 +110,7 @@ namespace NEA.math
                         else
                         {
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
+                            new_runner.meta = (-1, -1, null, new List<int>());
                         }
                         return (SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
                     }
@@ -147,6 +158,7 @@ namespace NEA.math
                         {
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             reason = "A != 0";
+                            new_runner.meta = (-1, -1, null, new List<int>());
                         }
                         new_runner.meta.artificalIdx = artificalIdx;
                         return (SimplexState.NOT_ENDED, new_runner, reason);
@@ -169,7 +181,7 @@ namespace NEA.math
                         new_runner.expressions = notArtificalExpr;
                         new_runner.mode = stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
                         new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
-                        new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
+                        new_runner.meta = (-1, -1, null, new List<int>());
                         return (SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
                     }
                 default:
@@ -200,7 +212,7 @@ namespace NEA.math
             var expressions = this.expressions;
             var selections = Enumerable.Range(1, expressions.GetLength(1) - 1)
                 .Select(y => (y, expressions[col, y]))
-                .Select(item => mode == SimplexMode.MAX ? item : (item.y, -item.Item2))
+                // .Select(item => mode == SimplexMode.MAX ? item : (item.y, -item.Item2))
                 .Where(item => item.Item2 > 0 && expressions[expressions.GetLength(0) - 1, item.y] / item.Item2 > 0)
                 .Select(item => (item.y, expressions[expressions.GetLength(0) - 1, item.y] / item.Item2))
                 .OrderBy(idx_frac => idx_frac.Item2)
@@ -245,5 +257,14 @@ namespace NEA.math
             return resolved;
         }
 
+        public override string ToString()
+        {
+            var expressions = this.expressions;
+            string expr_str = Enumerable.Range(0, expressions.GetLength(1))
+                .Select(y => string.Join(" & ", Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, y].AsLatex())))
+                .Select(row => $"{{ {row} }}")
+                .Aggregate((a, b) => a + " \\\\\n" + b);
+            return $"Stage: {stage}\nMode: {mode}\nStep: {step}\nVars: [{string.Join(", ", vars)}]\nExpressions:\n{expr_str}\nMeta: (pivotCol: {meta.pivotCol}, pivotRow: {meta.pivotRow}, normalised: [{(meta.normalised is null ? "" : string.Join(", ", meta.normalised))}], artificalIdx: [{string.Join(", ", meta.artificalIdx)}])";
+        }
     }
 }
