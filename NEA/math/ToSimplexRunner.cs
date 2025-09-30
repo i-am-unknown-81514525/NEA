@@ -50,30 +50,36 @@ namespace NEA.math
             );
         }
 
-        public static void RunAll(SimplexInterationRunner? runner)
+        public static SimplexRunnerOutput[] RunAll(SimplexInterationRunner? runner)
         {
             if (runner is null)
             {
                 ui.DEBUG.DebugStore.AppendLine("Runner is null, cannot run.");
-                return;
+                return new SimplexRunnerOutput[] { };
             }
             SimplexInterationRunner current = (SimplexInterationRunner)runner;
             int idx = 0;
+            List<SimplexRunnerOutput> results = new List<SimplexRunnerOutput>
+            {
+                new SimplexRunnerOutput(SimplexState.NOT_ENDED, current, "Initial state")
+            };
             while (true)
             {
                 ui.DEBUG.DebugStore.AppendLine($"--- Step {idx} ---");
                 ui.DEBUG.DebugStore.AppendLine(current.ToString());
-                (SimplexState state, SimplexInterationRunner? next, string reason) = current.Next();
-                ui.DEBUG.DebugStore.AppendLine($"State: {state}, Reason: {reason}");
-                if (state != SimplexState.NOT_ENDED)
+                SimplexRunnerOutput output = current.Next();
+                ui.DEBUG.DebugStore.AppendLine($"State: {output.state}, Reason: {output.reason}");
+                if (!(output.next is null)) results.Add(output);
+                if (output.state != SimplexState.NOT_ENDED)
                 {
-                    if (state == SimplexState.FAILED) ui.DEBUG.DebugStore.AppendLine("Simplex method failed to complete.");
-                    else if (state == SimplexState.ENDED) ui.DEBUG.DebugStore.AppendLine("Simplex method completed successfully.");
+                    if (output.state == SimplexState.FAILED) ui.DEBUG.DebugStore.AppendLine("Simplex method failed to complete.");
+                    else if (output.state == SimplexState.ENDED) ui.DEBUG.DebugStore.AppendLine("Simplex method completed successfully.");
                     break;
                 }
-                current = (SimplexInterationRunner)next;
+                current = (SimplexInterationRunner)output.next;
                 idx++;
             }
+            return results.ToArray();
         }
     }
 }

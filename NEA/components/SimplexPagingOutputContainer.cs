@@ -1,0 +1,90 @@
+using ui.components;
+using NEA.math;
+using ui.components.chainExt;
+using ui.math;
+
+namespace NEA.components
+{
+    public class SimplexPagingOutputContainer : Container
+    {
+        public readonly Switcher outer_switcher = new Switcher();
+        public readonly Switcher tableau_switcher = new Switcher();
+        public readonly Switcher switcher = new Switcher();
+
+        public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs)
+        {
+            if (outputs.Length == 0 || outputs.Length == 1)
+            {
+                IComponent item = new TextLabel("No outputs generated. (Unexpected)");
+                if (outputs.Length == 1)
+                {
+                    item = outputs[0].ToOutputContainer();
+                }
+                Add(new VerticalGroupComponent()
+                {
+                    (item, new Fraction(1, 1)),
+                    (
+                        new SimplexOutputExitContainer(
+                            (outer_switcher, 0, "Back to Menu"),
+                            (tableau_switcher, 0, "Back to Tableau")
+                        ),
+                        1
+                    )
+                });
+                return;
+            }
+            switcher.Add(
+                new VerticalGroupComponent()
+                {
+                    (outputs[0].ToOutputContainer(), new Fraction(1, 1)),
+                    (
+                        new HorizontalGroupComponent() {
+                            (new SimplexOutputExitContainer(
+                                (outer_switcher, 0, "Back to Menu"),
+                                (tableau_switcher, 0, "Back to Tableau")
+                            ), new Fraction(2, 3)),
+                            (new PageSwitcher(switcher, "Next", 1), new Fraction(1, 3))
+                        }
+                    )
+                }
+            );
+            for (int i = 1; i < outputs.Length - 1; i++)
+            {
+                int idx = i;
+                switcher.Add(
+                    new VerticalGroupComponent()
+                    {
+                        (outputs[idx].ToOutputContainer(), new Fraction(1, 1)),
+                        (
+                            new HorizontalGroupComponent() {
+                                (new PageSwitcher(switcher, "Last", idx - 1), new Fraction(1, 4)),
+                                (new SimplexOutputExitContainer(
+                                    (outer_switcher, 0, "Back to Menu"),
+                                    (tableau_switcher, 0, "Back to Tableau")
+                                ), new Fraction(2, 4)),
+                                (new PageSwitcher(switcher, "Next", idx + 1), new Fraction(1, 4))
+                            }
+                        )
+                    }
+                );
+            }
+            int last_idx = outputs.Length - 1;
+            switcher.Add(
+                new VerticalGroupComponent()
+                {
+                    (outputs[last_idx].ToOutputContainer(), new Fraction(1, 1)),
+                    (
+                        new HorizontalGroupComponent() {
+                            (new PageSwitcher(switcher, "Last", last_idx - 1), new Fraction(1, 3)),
+                            (new SimplexOutputExitContainer(
+                                (outer_switcher, 0, "Back to Menu"),
+                                (tableau_switcher, 0, "Back to Tableau")
+                            ), new Fraction(2, 3))
+                        }
+                    )
+                }
+            );
+        }
+        
+    }
+}

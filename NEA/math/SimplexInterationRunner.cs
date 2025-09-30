@@ -2,9 +2,34 @@ using System.Linq;
 using ui.math;
 using System;
 using System.Collections.Generic;
+using NEA.components;
+using ui.LatexExt;
 
 namespace NEA.math
 {
+    public struct SimplexRunnerOutput : ILatex
+    {
+        public readonly SimplexState state;
+        public readonly SimplexInterationRunner? next;
+        public readonly string reason;
+
+        public SimplexRunnerOutput(SimplexState state, SimplexInterationRunner? next, string reason)
+        {
+            this.state = state;
+            this.next = next;
+            this.reason = reason;
+        }
+
+        public SimplexOutputContainer ToOutputContainer()
+        {
+            return new SimplexOutputContainer(state, (SimplexInterationRunner)next, reason);
+        }
+
+        public string AsLatex()
+        {
+            return $"\\text{{{reason}}}\\\\{ToOutputContainer().AsLatex()}";
+        }
+    }
     public struct SimplexInterationRunner
     {
         public SimplexStage stage;
@@ -38,7 +63,7 @@ namespace NEA.math
             };
         }
 
-        public (SimplexState state, SimplexInterationRunner? next, string reason) Next()
+        public SimplexRunnerOutput Next()
         {
             SimplexInterationRunner new_runner = Clone();
             switch (step)
@@ -50,24 +75,24 @@ namespace NEA.math
                         if (result is null)
                         {
                             if (isCompleted())
-                                return (SimplexState.ENDED, this, $"There are no {pos} (unoptimal) column in objective function, and therefore a solution is found");
+                                return new SimplexRunnerOutput(SimplexState.ENDED, this, $"There are no {pos} (unoptimal) column in objective function, and therefore a solution is found");
                             else
-                                return (SimplexState.FAILED, null, $"Contradictory result: No pivot column can be found but the solution isn't complete");
+                                return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Contradictory result: No pivot column can be found but the solution isn't complete");
                         }
                         new_runner.step = SimplexStep.PICK_PIVOT_ROW;
                         new_runner.meta.pivotCol = (int)result;
-                        return (SimplexState.NOT_ENDED, new_runner, $"Picked pivot column with index of: {result + Const.DISPLAY_INDEX_OFFSET} as this is not optimal solution");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Picked pivot column with index of: {result + Const.DISPLAY_INDEX_OFFSET} as this is not optimal solution");
                     }
                 case SimplexStep.PICK_PIVOT_ROW:
                     {
                         int? result = GetRowIdxByMode(meta.pivotCol, mode);
                         if (result is null)
                         {
-                            return (SimplexState.FAILED, null, $"Cannot select a pivot row where RHS/col > 0 with pivot column with index: {meta.pivotCol + Const.DISPLAY_INDEX_OFFSET}");
+                            return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Cannot select a pivot row where RHS/col > 0 with pivot column with index: {meta.pivotCol + Const.DISPLAY_INDEX_OFFSET}");
                         }
                         new_runner.step = SimplexStep.NORMALISE_ROW;
                         new_runner.meta.pivotRow = (int)result;
-                        return (SimplexState.NOT_ENDED, new_runner, $"Picked pivot row with index of: {result + Const.DISPLAY_INDEX_OFFSET}");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Picked pivot row with index of: {result + Const.DISPLAY_INDEX_OFFSET}");
                     }
                 case SimplexStep.NORMALISE_ROW:
                     {
@@ -81,7 +106,7 @@ namespace NEA.math
                         }
                         new_runner.step = SimplexStep.APPLY_OTHER;
                         new_runner.meta.normalised = normalised;
-                        return (SimplexState.NOT_ENDED, new_runner, $"Normalise pivot row {meta.pivotRow} by multiply the row with {1 / value}");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Normalise pivot row {meta.pivotRow} by multiply the row with {1 / value}");
                     }
                 case SimplexStep.APPLY_OTHER:
                     {
@@ -112,7 +137,7 @@ namespace NEA.math
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             new_runner.meta = (-1, -1, null, new List<int>());
                         }
-                        return (SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
                     }
                 case SimplexStep.CHECK_ARTIFICAL:
                     {
@@ -127,7 +152,7 @@ namespace NEA.math
                                 artificalIdx.Add(x);
                                 if (curr_value != 1)
                                 {
-                                    return (SimplexState.FAILED, null, "Var A on row 0 isn't 1");
+                                    return new SimplexRunnerOutput(SimplexState.FAILED, null, "Var A on row 0 isn't 1");
                                 }
                             }
                             else if (var_name.StartsWith("a_") && var_name.Length > 2 && int.TryParse(var_name.Substring(2), out _))
@@ -161,7 +186,7 @@ namespace NEA.math
                             new_runner.meta = (-1, -1, null, new List<int>());
                         }
                         new_runner.meta.artificalIdx = artificalIdx;
-                        return (SimplexState.NOT_ENDED, new_runner, reason);
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, reason);
                     }
                 case SimplexStep.REMOVE_ARTIFICAL:
                     {
@@ -182,11 +207,11 @@ namespace NEA.math
                         new_runner.mode = stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
                         new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                         new_runner.meta = (-1, -1, null, new List<int>());
-                        return (SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
                     }
                 default:
                     {
-                        return (SimplexState.FAILED, null, "Stuck at undefined state");
+                        return new SimplexRunnerOutput(SimplexState.FAILED, null, "Stuck at undefined state");
                     }
             }
         }
