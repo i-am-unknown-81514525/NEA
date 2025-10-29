@@ -1,0 +1,159 @@
+name: Build and package full application
+
+on:
+    workflow_dispatch:
+
+permissions:
+    id-token: write
+    contents: read
+    attestations: write
+
+jobs:
+    rust_build_matrix:
+        strategy:
+            matrix:
+                osKind: [windows, macos, linux]
+                arch: [x86_64, aarch64]
+                include:
+                    - osKind: windows
+                      os: windows-latest
+                      ext: dll
+                    - osKind: macos
+                      os: macos-latest
+                      ext: dylib
+                    - osKind: linux
+                      os: ubuntu-latest
+                      ext: so
+                    - osKind: windows
+                      arch: aarch64
+                      toolchain: aarch64-pc-windows-msvc
+                      os: windows-11-arm
+                    - osKind: macos
+                      arch: x86_64
+                      toolchain: x86_64-apple-darwin
+                      os: macos-13
+                    - osKind: windows
+                      arch: x86_64
+                      toolchain: x86_64-pc-windows-gnu
+                    - osKind: macos
+                      arch: aarch64
+                      toolchain: aarch64-apple-darwin
+                    - osKind: linux
+                      arch: x86_64
+                      toolchain: x86_64-unknown-linux-gnu
+                    - osKind: linux
+                      arch: aarch64
+                      toolchain: aarch64-unknown-linux-gnu
+                      os: ubuntu-24.04-arm
+            fail-fast: false
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  submodules: true
+            - if: matrix.os == 'windows-11-arm'
+              name: Install rustup on Windows ARM
+              run: |
+                  curl -LOs https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe
+                  ./rustup-init.exe -y --default-toolchain none --no-modify-path
+                  echo "$USERPROFILE/.cargo/bin" >> "$GITHUB_PATH"
+            - if: matrix.os == 'windows-11-arm'
+              uses: actions-rust-lang/setup-rust-toolchain@v1
+              with:
+                  rustflags: ""
+            - if: matrix.os != 'windows-11-arm'
+              name: Install Rust toolchain
+              uses: actions-rs/toolchain@v1
+              with:
+                  target: ${{ matrix.toolchain }}
+                  toolchain: stable
+                  override: true
+            - name: Build Release
+              working-directory: ui/stdin_handler
+              run: cargo build --release
+            - name: Rename file
+              if: ${{ matrix.ext == 'dll' }}
+              working-directory: ui/stdin_handler
+              run: "cp target/release/stdin_handler.dll target/release/libstdin_handler.dll"
+            - name: Generate artifact attestation
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: ./ui/stdin_handler/target/release/libstdin_handler.${{ matrix.ext }}
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: rust-${{ matrix.osKind }}-${{ matrix.arch }}
+                  path: ./ui/stdin_handler/target/release/libstdin_handler.${{ matrix.ext }}
+    dotnet_build_matrix:
+        strategy:
+            matrix:
+                arch: [x64, ARM64, any]
+            fail-fast: false
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  submodules: true
+            - name: Install mono
+              working-directory: ./.github_build
+              run: sh mono_install.sh
+            - name: Build application
+              working-directory: ./.github_build
+              run: python3 build.py ${{ matrix.arch }}
+            - name: Debug
+              run: |
+                  echo "pwd: $(pwd)"
+                  echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
+                  ARTIFACT_FOLDER="${{ github.workspace }}/.github_build/.build"
+                  ls -laR "$ARTIFACT_FOLDER" || echo "'$ARTIFACT_FOLDER' does not exist or is empty."
+              continue-on-error: true
+            - name: Generate artifact attestation
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: |
+                      ./.github_build/.build/*.exe
+                      ./.github_build/.build/*.dll
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dotnet-${{ matrix.arch }}
+                  path: ./.github_build/.build
+                  include-hidden-files: true
+    final_matrix:
+        needs:
+            - rust_build_matrix
+            - dotnet_build_matrix
+        strategy:
+            matrix:
+                os: [windows, macos, linux]
+                arch: [x86_64, aarch64]
+                include:
+                    - arch: x86_64
+                      dotnet_arch: x64
+                    - arch: aarch64
+                      dotnet_arch: ARM64
+                    - os: macos
+                      dotnet_arch: any
+                    - os: linux
+                      dotnet_arch: any
+            fail-fast: false
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download rust artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: rust-${{ matrix.os }}-${{ matrix.arch }}
+            - name: Download dotnet artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: dotnet-${{ matrix.dotnet_arch }}
+            - name: Generate artifact attestation
+              uses: actions/attest-build-provenance@v2
+              with:
+                  subject-path: ./*
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: full-${{matrix.os}}-${{matrix.arch}}-dotnet_${{matrix.dotnet_arch}}
+                  path: ./
+                  include-hidden-files: true

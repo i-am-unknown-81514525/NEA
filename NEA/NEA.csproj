@@ -80,5 +80,11 @@
       <Name>ui</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\math_parser\math_parser.csproj">
+      <Project>{3c6fb759-b64c-4e44-b7cd-73a4449e16de}</Project>
+      <Name>math_parser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

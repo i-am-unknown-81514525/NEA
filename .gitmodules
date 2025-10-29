@@ -1,3 +1,6 @@
 [submodule "ui"]
 	path = ui
 	url = https://github.com/i-am-unknown-81514525/csharp.consoleUI.git
+[submodule "math_parser"]
+	path = math_parser
+	url = https://github.com/i-am-unknown-81514525/math-parser.git
