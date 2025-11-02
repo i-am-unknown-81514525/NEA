@@ -30,9 +30,12 @@ namespace NEA.components
                                                 ToSimplexRunner.Translate(
                                                     tableau_input.table
                                                 )
-                                            )
+                                            ),
+                                            outer_switcher,
+                                            inner_switcher
                                         )
                                     );
+                                    inner_switcher.SwitchTo(1);
                                 }
                             )
                         }

@@ -32,7 +32,7 @@ namespace NEA.components
                     }
                 }
                 loc.y--;
-                return new TextLabel(runner.expressions[loc.x, loc.y].AsLatex());
+                return new TextLabel(runner.expressions[loc.x, loc.y].ToString());
             });
         }
 

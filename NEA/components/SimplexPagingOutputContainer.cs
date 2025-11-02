@@ -7,12 +7,15 @@ namespace NEA.components
 {
     public class SimplexPagingOutputContainer : Container
     {
-        public readonly Switcher outer_switcher = new Switcher();
-        public readonly Switcher tableau_switcher = new Switcher();
+        public readonly Switcher outer_switcher;
+        public readonly Switcher tableau_switcher;
         public readonly Switcher switcher = new Switcher();
 
-        public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs)
+        public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs, Switcher outer_switcher, Switcher tableau_switcher)
         {
+            this.outer_switcher = outer_switcher;
+            this.tableau_switcher = tableau_switcher;
+
             if (outputs.Length == 0 || outputs.Length == 1)
             {
                 IComponent item = new TextLabel("No outputs generated. (Unexpected)");
@@ -44,7 +47,7 @@ namespace NEA.components
                                 (tableau_switcher, 0, "Back to Tableau")
                             ), new Fraction(2, 3)),
                             (new PageSwitcher(switcher, "Next", 1), new Fraction(1, 3))
-                        }
+                        },1
                     )
                 }
             );
@@ -63,7 +66,7 @@ namespace NEA.components
                                     (tableau_switcher, 0, "Back to Tableau")
                                 ), new Fraction(2, 4)),
                                 (new PageSwitcher(switcher, "Next", idx + 1), new Fraction(1, 4))
-                            }
+                            },1
                         )
                     }
                 );
@@ -80,10 +83,12 @@ namespace NEA.components
                                 (outer_switcher, 0, "Back to Menu"),
                                 (tableau_switcher, 0, "Back to Tableau")
                             ), new Fraction(2, 3))
-                        }
+                        }, 1
                     )
                 }
             );
+
+            Add(switcher);
         }
         
     }
