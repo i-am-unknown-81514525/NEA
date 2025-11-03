@@ -10,7 +10,7 @@ namespace NEA.components
         {
             Add(
                 new VerticalGroupComponent() {
-                    (new Frame().WithInner(new Button("Button 1")), new Fraction(1, 4)),
+                    (new Frame().WithInner(new Button("Structured input")), new Fraction(1, 4)),
                     (new Padding(), 1),
                     (new Frame().WithInner(new Button("Tableau input").WithHandler((_)=>switcher.SwitchTo(2))), new Fraction(1, 4)),
                     (new Padding(), 1),
