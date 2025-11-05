@@ -13,7 +13,7 @@ jobs:
         strategy:
             matrix:
                 osKind: [windows, macos, linux]
-                arch: [x86_64, aarch64]
+                arch: [x86_64]
                 include:
                     - osKind: windows
                       os: windows-latest
@@ -24,27 +24,16 @@ jobs:
                     - osKind: linux
                       os: ubuntu-latest
                       ext: so
-                    - osKind: windows
-                      arch: aarch64
-                      toolchain: aarch64-pc-windows-msvc
-                      os: windows-11-arm
                     - osKind: macos
                       arch: x86_64
                       toolchain: x86_64-apple-darwin
-                      os: macos-13
+                      os: macos-15-intel
                     - osKind: windows
                       arch: x86_64
                       toolchain: x86_64-pc-windows-gnu
-                    - osKind: macos
-                      arch: aarch64
-                      toolchain: aarch64-apple-darwin
                     - osKind: linux
                       arch: x86_64
                       toolchain: x86_64-unknown-linux-gnu
-                    - osKind: linux
-                      arch: aarch64
-                      toolchain: aarch64-unknown-linux-gnu
-                      os: ubuntu-24.04-arm
             fail-fast: false
         runs-on: ${{ matrix.os }}
         steps:
@@ -75,10 +64,6 @@ jobs:
               if: ${{ matrix.ext == 'dll' }}
               working-directory: ui/stdin_handler
               run: "cp target/release/stdin_handler.dll target/release/libstdin_handler.dll"
-            - name: Generate artifact attestation
-              uses: actions/attest-build-provenance@v2
-              with:
-                  subject-path: ./ui/stdin_handler/target/release/libstdin_handler.${{ matrix.ext }}
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
@@ -87,7 +72,7 @@ jobs:
     dotnet_build_matrix:
         strategy:
             matrix:
-                arch: [x64, ARM64, any]
+                arch: [x64, any]
             fail-fast: false
         runs-on: ubuntu-latest
         steps:
@@ -107,12 +92,6 @@ jobs:
                   ARTIFACT_FOLDER="${{ github.workspace }}/.github_build/.build"
                   ls -laR "$ARTIFACT_FOLDER" || echo "'$ARTIFACT_FOLDER' does not exist or is empty."
               continue-on-error: true
-            - name: Generate artifact attestation
-              uses: actions/attest-build-provenance@v2
-              with:
-                  subject-path: |
-                      ./.github_build/.build/*.exe
-                      ./.github_build/.build/*.dll
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
@@ -126,12 +105,10 @@ jobs:
         strategy:
             matrix:
                 os: [windows, macos, linux]
-                arch: [x86_64, aarch64]
+                arch: [x86_64]
                 include:
                     - arch: x86_64
                       dotnet_arch: x64
-                    - arch: aarch64
-                      dotnet_arch: ARM64
                     - os: macos
                       dotnet_arch: any
                     - os: linux
@@ -147,10 +124,6 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: dotnet-${{ matrix.dotnet_arch }}
-            - name: Generate artifact attestation
-              uses: actions/attest-build-provenance@v2
-              with:
-                  subject-path: ./*
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
