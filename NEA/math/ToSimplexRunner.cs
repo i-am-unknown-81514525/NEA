@@ -106,13 +106,19 @@ namespace NEA.math
             foreach (Term term in optimal.terms)
             {
                 if (term.term_name == "") continue;
-                if (!IsValidVariableName(term.term_name)) return null;
-                if (IsArtificialVariable(term.term_name) || IsSlackVariable(term.term_name)) return null;
-                if (varNames.Contains(term.term_name)) return null;
-                if (!varNames.Contains(term.term_name))
-                {
-                    varNames.Add(term.term_name);
+                if (!IsValidVariableName(term.term_name)) {
+                    ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {term.term_name}");
+                    return null;
                 }
+                if (IsArtificialVariable(term.term_name) || IsSlackVariable(term.term_name)) {
+                    ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {term.term_name}");
+                    return null;
+                }
+                if (varNames.Contains(term.term_name)) {
+                    ui.DEBUG.DebugStore.AppendLine($"Duplicate variable name: {term.term_name}");
+                    return null;
+                }
+                varNames.Add(term.term_name);
             }
 
             List<Meta> construct_meta = new List<Meta>();
@@ -126,8 +132,14 @@ namespace NEA.math
                         lhs_literal += t.coefficient.Transitivity();
                     } else
                     {
-                        if (!IsValidVariableName(t.term_name)) return null;
-                        if (IsArtificialVariable(t.term_name) || IsSlackVariable(t.term_name)) return null;
+                        if (!IsValidVariableName(t.term_name)) {
+                            ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {t.term_name}");
+                            return null;
+                        }
+                        if (IsArtificialVariable(t.term_name) || IsSlackVariable(t.term_name)) {
+                            ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {t.term_name}");
+                            return null;
+                        }
                         if (!varNames.Contains(t.term_name))
                         {
                             varNames.Add(t.term_name);
@@ -196,6 +208,14 @@ namespace NEA.math
 
             // + 2: P, RHS, conditional: A // + 1: objective, conditional: 2 stage objective
             Fraction[,] values = new Fraction[varNames.Count + used_artifical + used_slack + 2  + (used_artifical > 0 ? 1 : 0), construct_meta.Count + 1 + (used_artifical > 0 ? 1 : 0)];
+            // Initialize to 0
+            for (int _i = 0; _i < values.GetLength(0); _i++)
+            {
+                for (int _j = 0; _j < values.GetLength(1); _j++)
+                {
+                    values[_i, _j] = 0;
+                }
+            }
             int padding_start = used_artifical > 0 ? 2 : 1;
             if (used_artifical > 0)
             {
@@ -263,11 +283,30 @@ namespace NEA.math
                 }
             }
 
+            List<string> full_vars = new List<string>();
+            if (used_artifical > 0)
+            {
+                full_vars.Add("A");
+            }
+            full_vars.Add("P");
+            foreach (string v in varNames)
+            {
+                full_vars.Add(v);
+            }
+            for (int i = 0; i < used_slack; i++)
+            {
+                full_vars.Add($"s_{i + 1}");
+            }
+            for (int i = 0; i < used_artifical; i++)
+            {
+                full_vars.Add($"a_{i + 1}");
+            }
+
             return new SimplexInterationRunner(
                 used_artifical > 0 ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
                 used_artifical > 0 ? SimplexMode.MIN : SimplexMode.MAX,
                 values,
-                varNames.ToArray()
+                full_vars.ToArray()
             );
         }
 
@@ -284,6 +323,14 @@ namespace NEA.math
                 varNames.Add(varName);
             }
             Fraction[,] values = new Fraction[table.GetSize().x + 1, table.GetSize().y];
+            // Initialize array entries to zero fraction to avoid default-denominator==0
+            for (int _i = 0; _i < values.GetLength(0); _i++)
+            {
+                for (int _j = 0; _j < values.GetLength(1); _j++)
+                {
+                    values[_i, _j] = (Fraction)0;
+                }
+            }
             for (int x = 0; x <= table.GetSize().x; x++)
             {
                 for (int y = 1; y < table.GetSize().y + 1; y++)

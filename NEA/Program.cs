@@ -27,21 +27,11 @@ namespace NEA
                 switcher
             );
             TableauPage table_page = new TableauPage(switcher);
+            ModelInputPage model_page = new ModelInputPage(switcher);
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),
-                    new VerticalGroupComponent() {
-                        new MultiLineInputField(),
-                        (
-                            new HorizontalGroupComponent() {
-                                new Button("Back")
-                                    .WithHandler(
-                                        (_)=>switcher.SwitchTo(0)
-                                    ),
-                                new Button("Start")
-                            }
-                        , 1)
-                    },
+                    model_page,
                     table_page
                     
                 }
