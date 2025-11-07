@@ -4,6 +4,9 @@
       "repositories": {
         "i-am-unknown-81514525/csharp.consoleUI": {
           "permissions": "write-all"
+        },
+        "i-am-unknown-81514525/math-parser": {
+          "permissions": "write-all"
         }
       }
     }
