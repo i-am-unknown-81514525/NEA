@@ -1,6 +1,9 @@
 using ui.components;
 using NEA.math;
 using ui.math;
+using ui.components.chainExt;
+using ui.utils;
+using ui.fmt;
 
 namespace NEA.components
 {
@@ -31,10 +34,17 @@ namespace NEA.components
             this.state = state;
             this.runner = runner;
             this.reason = reason;
+            Logger logger = new Logger()
+                .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
+                .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
+                .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
+                .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
+            logger.Push(reason);
             Add(
                 new VerticalGroupComponent()
                 {
-                    new SimplexOutputTable(runner)
+                    new SimplexOutputTable(runner),
+                    (logger, 1)
                 }
             );
         }
