@@ -98,6 +98,8 @@ namespace NEA.math
             return Translate(objective, eqs.ToArray());
         }
 
+        public static SimplexInterationRunner? Translate((ExprResult optimal, EqResult[] constraints) inputs) => Translate(inputs.optimal, inputs.constraints);
+
         public static SimplexInterationRunner? Translate(ExprResult optimal, EqResult[] constraints)
         {
             List<string> varNames = new List<string>();

@@ -10,14 +10,17 @@ namespace NEA.components
         {
             Add(
                 new VerticalGroupComponent() {
-                    (new Frame().WithInner(new Button("Structured input")), new Fraction(1, 4)),
+                    (new Frame().WithInner(new Button("Structured input").WithHandler((_)=>switcher.SwitchTo(3))), new Fraction(1, 4)),
                     (new Padding(), 1),
                     (new Frame().WithInner(new Button("Tableau input").WithHandler((_)=>switcher.SwitchTo(2))), new Fraction(1, 4)),
                     (new Padding(), 1),
                     (new Frame().WithInner(new Button("LP model input").WithHandler((_)=>switcher.SwitchTo(1))), new Fraction(1, 4)),
                     // (new Frame().WithInner(new Button("Button 3")), new Fraction(1, 4)),
                     (new Padding(), 1),
-                    (new Frame().WithInner(new ExitButton("Exit")), new Fraction(1, 4)),
+                    (new HorizontalGroupComponent() {
+                            (new Frame().WithInner(new Button("Import")), new Fraction(1, 2)),
+                            (new Frame().WithInner(new ExitButton("Exit")), new Fraction(1, 2))
+                    }, new Fraction(1, 4)),
                 }
             );
         }
