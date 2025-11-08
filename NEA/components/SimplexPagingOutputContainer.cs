@@ -2,6 +2,7 @@ using ui.components;
 using NEA.math;
 using ui.components.chainExt;
 using ui.math;
+using System.Linq;
 
 namespace NEA.components
 {
@@ -82,8 +83,30 @@ namespace NEA.components
                             (new SimplexOutputExitContainer(
                                 (outer_switcher, 0, "Back to Menu"),
                                 (tableau_switcher, 0, "Back to Tableau")
-                            ), new Fraction(2, 3))
+                            ), new Fraction(2, 3)),
+                            (new PageSwitcher(switcher, "Result", last_idx + 1), new Fraction(1, 4))
                         }, 1
+                    )
+                }
+            );
+            switcher.Add(
+                new VerticalGroupComponent()
+                {
+                    (
+                        new TextLabel(
+                            string.Join("\n", ((SimplexInterationRunner)outputs[last_idx].next).Resolve().Select(p=>$"{p.Key}: {p.Value}"))
+                        ).WithVAlign<EmptyStore, TextLabel>(ui.utils.VerticalAlignment.TOP)
+                        .WithHAlign<EmptyStore, TextLabel>(ui.utils.HorizontalAlignment.LEFT),
+                        new Fraction(1, 1)
+                    ),
+                    (
+                        new HorizontalGroupComponent() {
+                            (new PageSwitcher(switcher, "Last", last_idx), new Fraction(1, 3)),
+                            (new SimplexOutputExitContainer(
+                                (outer_switcher, 0, "Back to Menu"),
+                                (tableau_switcher, 0, "Back to Tableau")
+                            ), new Fraction(2, 3))
+                        },1
                     )
                 }
             );
