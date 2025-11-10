@@ -24,10 +24,10 @@ namespace NEA.files
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Join(";", exporting_runner.vars) + ";RHS");
-            for (int i = 0; i < exporting_runner.expressions.GetLength(0); i++)
+            for (int j = 0; j < exporting_runner.expressions.GetLength(1); j++)
             {
                 List<string> row = new List<string>();
-                for (int j = 0; j < exporting_runner.expressions.GetLength(1); j++)
+                for (int i = 0; i < exporting_runner.expressions.GetLength(0); i++)
                 {
                     row.Add(exporting_runner.expressions[i, j].ToString());
                 }
