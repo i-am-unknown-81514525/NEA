@@ -4,7 +4,7 @@ using NEA.math;
 using System.Collections.Generic;
 using System;
 
-namespace ui.files
+namespace NEA.files
 {
     public class ExportException : Exception
     {

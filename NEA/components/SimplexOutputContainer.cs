@@ -4,6 +4,8 @@ using ui.math;
 using ui.components.chainExt;
 using ui.utils;
 using ui.fmt;
+using System;
+using NEA.files;
 
 namespace NEA.components
 {
@@ -30,24 +32,61 @@ namespace NEA.components
             }
         }
         public TextLabel reasonLabel = new TextLabel();
+
+        public readonly Logger logger = new Logger()
+                .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
+                .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
+                .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
+                .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
         public SimplexOutputContainer(SimplexState state, SimplexInterationRunner runner, string reason)
         {
             this.state = state;
             this.runner = runner;
             this.reason = reason;
-            Logger logger = new Logger()
-                .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
-                .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
-                .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
-                .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
+            SingleLineInputField filename_input = new SingleLineInputField();
             logger.Push(reason);
             Add(
                 new VerticalGroupComponent()
                 {
                     (table = new SimplexOutputTable(runner)),
-                    (logger, 1)
+                    (logger, 1),
+                    (
+                        new HorizontalGroupComponent() { (new TextLabel("Export filename: "), 17),
+                            filename_input,
+                            (new Button("Export").WithHandler(
+                                (_)=> {
+                                    try
+                                    {
+                                        if (filename_input.content.Trim() == "")
+                                        {
+                                            throw new Exception("Filename cannot be empty");
+                                        }
+                                        ExportHandler.ExportToFile(
+                                            runner,
+                                            filename_input.content
+                                        );
+                                        logger.Push($"Exported to {filename_input.content}");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        logger.Push(ex.Message);
+                                        logger.WithForeground<EmptyStore, Logger>(ForegroundColorEnum.RED);
+                                    }
+                                }
+                            ), 6)}, 1
+                    )
                 }
             );
+        }
+
+        protected override void OnMount()
+        {
+            base.OnMount();
+            logger.WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
+                .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
+                .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
+                .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
+            logger.Push(reason);
         }
 
         public override string AsLatex()
