@@ -36,7 +36,6 @@ namespace NEA.components
                             new PageSwitcher(outer_switcher, "Back", 0),
                             new Button("Import").WithHandler(
                                 (_)=> {
-                                    string state = "";
                                     try
                                     {
                                         output_container.Set(

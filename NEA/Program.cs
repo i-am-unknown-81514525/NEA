@@ -29,12 +29,14 @@ namespace NEA
             TableauPage table_page = new TableauPage(switcher);
             ModelInputPage model_page = new ModelInputPage(switcher);
             StructuredPage structured_page = new StructuredPage(switcher);
+            ImportPage import_page = new ImportPage(switcher);
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),
                     model_page,
                     table_page,
-                    structured_page
+                    structured_page,
+                    import_page         
                 }
             );
             app.WithExitHandler<EmptyStore, App>((appObj) =>

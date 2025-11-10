@@ -18,7 +18,7 @@ namespace NEA.components
                     // (new Frame().WithInner(new Button("Button 3")), new Fraction(1, 4)),
                     (new Padding(), 1),
                     (new HorizontalGroupComponent() {
-                            (new Frame().WithInner(new Button("Import")), new Fraction(1, 2)),
+                            (new Frame().WithInner(new Button("Import").WithHandler((_)=>switcher.SwitchTo(4))), new Fraction(1, 2)),
                             (new Frame().WithInner(new ExitButton("Exit")), new Fraction(1, 2))
                     }, new Fraction(1, 4)),
                 }
