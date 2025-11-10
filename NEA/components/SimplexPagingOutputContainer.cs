@@ -121,6 +121,7 @@ namespace NEA.components
 \usepackage{{amsmath}}
 \usepackage{{mathtools}}
 \begin{{document}}
+\text{{Begin}}
 {0}
 \end{{document}}";
             string content = string.Join("\n", outputs.Select(output => output.AsLatex()));

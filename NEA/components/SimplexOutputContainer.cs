@@ -19,6 +19,7 @@ namespace NEA.components
     {
         public SimplexState state;
         public SimplexInterationRunner runner;
+        public SimplexOutputTable table;
         public string reason
         {
             get => reasonLabel.text;
@@ -43,10 +44,15 @@ namespace NEA.components
             Add(
                 new VerticalGroupComponent()
                 {
-                    new SimplexOutputTable(runner),
+                    (table = new SimplexOutputTable(runner)),
                     (logger, 1)
                 }
             );
+        }
+
+        public override string AsLatex()
+        {
+            return table.AsLatex();
         }
     }
 }
