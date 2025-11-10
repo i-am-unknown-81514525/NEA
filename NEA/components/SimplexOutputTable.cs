@@ -2,9 +2,27 @@ using ui.components;
 using ui.components.chainExt;
 using ui.utils;
 using NEA.math;
+using ui.math;
 
 namespace NEA.components
 {
+    public class FractionTableCell : TextLabel
+    {
+        //Reactive of value with type Fraction, Trigger: SetHasUpdate();
+        private Fraction _value;
+        public Fraction value {get => _value; set {_value = value; text = value.ToString();} }
+
+        public FractionTableCell(Fraction value) : base(value.ToString())
+        {
+            this.value = value;
+        }
+
+        public override string AsLatex()
+        {
+            return value.AsLatex();
+        }
+    }
+
     public class SimplexOutputTable : VirtualTable<FormattedTable>
     {
         public SimplexInterationRunner runner;
@@ -32,7 +50,7 @@ namespace NEA.components
                     }
                 }
                 loc.y--;
-                return new TextLabel(runner.expressions[loc.x, loc.y].ToString());
+                return new FractionTableCell(runner.expressions[loc.x, loc.y]);
             });
         }
 
