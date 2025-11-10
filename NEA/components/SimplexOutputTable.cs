@@ -6,6 +6,19 @@ using ui.math;
 
 namespace NEA.components
 {
+    public class VariableLabel : TextLabel
+    {
+
+        public VariableLabel(string text) : base(text)
+        {
+        }
+
+        public override string AsLatex()
+        {
+            return $"${text}$";
+        }
+    }
+
     public class FractionTableCell : TextLabel
     {
         //Reactive of value with type Fraction, Trigger: SetHasUpdate();

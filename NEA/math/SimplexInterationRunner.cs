@@ -27,7 +27,7 @@ namespace NEA.math
 
         public string AsLatex()
         {
-            return $"\\text{{{reason}}}\\\\{ToOutputContainer().AsLatex()}";
+            return $"\\text{{{reason.Replace("_", "\\_")}}}\\\\{ToOutputContainer().AsLatex()}";
         }
     }
     public class SimplexInterationRunner
