@@ -44,7 +44,7 @@ namespace NEA.math
             return Regex.IsMatch(name, @"^[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]+)?$");
         }
 
-        public static SimplexInterationRunner? Translate(string model)
+        public static SimplexInterationRunner Translate(string model)
         {
             Keyword.PushKeyword("MAX"); // TODO: lib fix to prevent repeat Keyword
             Keyword.PushKeyword("ST");
@@ -98,9 +98,9 @@ namespace NEA.math
             return Translate(objective, eqs.ToArray());
         }
 
-        public static SimplexInterationRunner? Translate((ExprResult optimal, EqResult[] constraints) inputs) => Translate(inputs.optimal, inputs.constraints);
+        public static SimplexInterationRunner Translate((ExprResult optimal, EqResult[] constraints) inputs) => Translate(inputs.optimal, inputs.constraints);
 
-        public static SimplexInterationRunner? Translate(ExprResult optimal, EqResult[] constraints)
+        public static SimplexInterationRunner Translate(ExprResult optimal, EqResult[] constraints)
         {
             List<string> varNames = new List<string>();
             int used_artifical = 0;
@@ -312,7 +312,7 @@ namespace NEA.math
             );
         }
 
-        public static SimplexInterationRunner? Translate(SimplexInputTable table)
+        public static SimplexInterationRunner Translate(SimplexInputTable table)
         {
             List<string> varNames = new List<string>();
             bool has_artifical = false;
@@ -350,7 +350,7 @@ namespace NEA.math
             );
         }
 
-        public static SimplexRunnerOutput[] RunAll(SimplexInterationRunner? runner)
+        public static SimplexRunnerOutput[] RunAll(SimplexInterationRunner runner)
         {
             if (runner is null)
             {
