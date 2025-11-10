@@ -70,6 +70,7 @@
     <Compile Include="math\*.cs" />
     <Compile Include="store\*.cs" />
     <Compile Include="Const.cs" />
+    <Compile Include="files\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
