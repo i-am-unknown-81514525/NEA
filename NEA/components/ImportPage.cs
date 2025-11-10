@@ -39,21 +39,20 @@ namespace NEA.components
                                     try
                                     {
                                         output_container.Set(
-                                        new SimplexPagingOutputContainer(
-                                            ToSimplexRunner.RunAll(
-                                                ImportHandler.ImportFromFile(filename_input.content)
-                                            ),
-                                            outer_switcher,
-                                            inner_switcher
-                                        )
-                                    );
+                                            new SimplexPagingOutputContainer(
+                                                ToSimplexRunner.RunAll(
+                                                    ImportHandler.ImportFromFile(filename_input.content)
+                                                ),
+                                                outer_switcher,
+                                                inner_switcher
+                                            )
+                                        );
+                                        inner_switcher.SwitchTo(1);
                                     }
                                     catch (Exception ex)
                                     {
                                         logger.Push(ex.Message);
                                     }
-
-                                    inner_switcher.SwitchTo(1);
                                 }
                             )
                         }
