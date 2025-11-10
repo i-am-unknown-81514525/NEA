@@ -42,7 +42,7 @@ namespace NEA.components
                                         output_container.Set(
                                         new SimplexPagingOutputContainer(
                                             ToSimplexRunner.RunAll(
-                                                InputHandler.ImportFromFile(filename_input.content)
+                                                ImportHandler.ImportFromFile(filename_input.content)
                                             ),
                                             outer_switcher,
                                             inner_switcher
