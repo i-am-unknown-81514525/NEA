@@ -101,17 +101,46 @@ namespace NEA.components
                     ),
                     (
                         new HorizontalGroupComponent() {
-                            (new PageSwitcher(switcher, "Last", last_idx), new Fraction(1, 3)),
+                            (new PageSwitcher(switcher, "Last", last_idx), new Fraction(1, 4)),
                             (new SimplexOutputExitContainer(
                                 (outer_switcher, 0, "Back to Menu"),
                                 (tableau_switcher, 0, "Back to Tableau")
-                            ), new Fraction(2, 3))
+                            ), new Fraction(2, 4)),
+                            (new Button("Open As Latex").WithHandler((button, loc) => { DisplayLatex(ToLatex(outputs)); }), new Fraction(1, 4))
                         },1
                     )
                 }
             );
 
             Add(switcher);
+        }
+
+        public static string ToLatex(SimplexRunnerOutput[] outputs)
+        {
+            string base_string = @"\documentclass{{article}}
+\usepackage{{amsmath}}
+\usepackage{{mathtools}}
+\begin{{document}}
+{0}
+\end{{document}}";
+            string content = string.Join("\n", outputs.Select(output => output.AsLatex()));
+            return string.Format(base_string, content);
+        }
+
+        public static void DisplayLatex(string latex)
+        {
+            string urlBase = "https://www.overleaf.com/docs?snip_uri[]=data:application/x-tex;base64,{0}&snip_name[]=main.tex";
+            string encoded = Base64Encode(latex).Replace("+", "-").Replace("/", "_").Replace("=", "");
+            string fullURL = string.Format(urlBase, encoded);
+            ui.core.ConsoleHandler.ConsoleIntermediateHandler.OpenWebsite(fullURL);
+        }
+
+
+        // https://stackoverflow.com/a/11743162 CC-BY-SA 4.0 10/11/2025
+        public static string Base64Encode(string plainText) 
+        {
+            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
         }
         
     }
