@@ -55,11 +55,11 @@ namespace NEA.components
                 {
                     if (loc.x < runner.vars.Length)
                     {
-                        return new TextLabel(runner.vars[loc.x]);
+                        return new VariableLabel(runner.vars[loc.x]);
                     }
                     else
                     {
-                        return new TextLabel("RHS");
+                        return new VariableLabel("RHS");
                     }
                 }
                 loc.y--;
