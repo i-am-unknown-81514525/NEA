@@ -121,10 +121,10 @@ namespace NEA.components
 \usepackage{{amsmath}}
 \usepackage{{mathtools}}
 \begin{{document}}
-\text{{Begin}}
+\noindent
 {0}
 \end{{document}}";
-            string content = string.Join("\n", outputs.Select(output => output.AsLatex()));
+            string content = string.Join("\\\\\\\\\n", outputs.Select(output => output.AsLatex()));
             return string.Format(base_string, content);
         }
 
