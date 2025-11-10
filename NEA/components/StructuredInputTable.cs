@@ -5,6 +5,7 @@ using math_parser.atom;
 using System.Collections.Generic;
 using math_parser.tokenizer;
 using math_parser.math;
+using ui.fmt;
 
 namespace NEA.components
 {
@@ -25,9 +26,10 @@ namespace NEA.components
             return new ComparsionStateStore(null);
         }
 
-        public ComparisionStateButton(ComparsionStateStore stateStore = null) : base()
+        public ComparisionStateButton(math_parser.atom.ComparsionSymbolAtom symbol = null) : base()
         {
-            store.atom = stateStore.atom ?? math_parser.atom.ComparsionSymbolAtom.Le;
+            store.atom = symbol ?? math_parser.atom.ComparsionSymbolAtom.Le;
+            text = store.atom.literal;
             onClickHandler = (btn, loc) =>
             {
                 btn.store.atom = (
@@ -38,8 +40,10 @@ namespace NEA.components
                         { math_parser.atom.ComparsionSymbolAtom.Eq, math_parser.atom.ComparsionSymbolAtom.Le },
                     }
                 )[btn.store.atom];
+                text = btn.store.atom.literal;
 
             };
+            foreground = ForegroundColorEnum.BLACK;
         }
     }
 
@@ -75,15 +79,25 @@ namespace NEA.components
                 }
             }
             if (loc.x == 0) return new TextLabel("");
-            switch (Mod(loc.x - 3, 3))
+            if (loc.x == table.GetSize().x - 2)
+            {
+                return new ComparisionStateButton();
+            }
+            else if (loc.x == table.GetSize().x - 1)
+            {
+                return new SimplexTableauVariableField();
+            }
+            //  2          0      1     2     3
+            //  (MAX|"") [field] [var] ([+] [field] [var]))* (button|"") (RHS_value|"") // Show MAX on top and not the rhs value input and not the comparsion sign
+            switch (Mod(loc.x - 1, 3))
             {
                 case 0:
                     return new SimplexTableauVariableField();
                 case 1:
-                    return new TextLabel("+");
-                case 2:
                     int idx = (loc.x - 5) / 3 + Const.DISPLAY_INDEX_OFFSET;
                     return new TextLabel($"x_{idx}");
+                case 2:
+                    return new TextLabel("+");
                 default:
                     throw new System.Exception("Unreachable code reached in StructuredInputTable.ComponentAt");
             }
@@ -114,8 +128,11 @@ namespace NEA.components
             table.RemoveColumn(0); // The un-specified size row
             table.AddColumn(); // field
             table.AddColumn(3); // var
-            table.AddColumn(2); // button
+            table.AddColumn(4); // button
             table.AddColumn(); // RHS value
+            table.AddRow(1);
+            table.RemoveRow(0); // The un-specified size column
+            table.AddRow(1);
             table.WithComponentConstructor(
                 ComponentAt
             );
@@ -141,7 +158,7 @@ namespace NEA.components
             int idx = inner.GetSize().x - 2;
             inner.InsertColumn(idx, text.Length); // var
             inner.InsertColumn(idx, amount); // input field
-            inner.InsertColumn(idx, 1); // plus sign
+            inner.InsertColumn(idx, 3); // plus sign
             for (int y = 0; y < inner.GetSize().y; y++)
             {
                 for (int x = idx; x < idx + 3; x++)

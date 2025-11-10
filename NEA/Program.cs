@@ -28,7 +28,7 @@ namespace NEA
             );
             TableauPage table_page = new TableauPage(switcher);
             ModelInputPage model_page = new ModelInputPage(switcher);
-            StructuredInputTable structured_page = new StructuredInputTable();
+            StructuredPage structured_page = new StructuredPage(switcher);
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),

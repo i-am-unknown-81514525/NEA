@@ -5,8 +5,8 @@ namespace NEA.components
     public class SimplexStructuredInput : Container
     {
         public readonly StructuredInputTable table = new StructuredInputTable();
-        public readonly BoundedSpinner row = new BoundedSpinner("Row", 2, 2, 7);
-        public readonly BoundedSpinner column = new BoundedSpinner("Column", 2, 2, 16);
+        public readonly BoundedSpinner row = new BoundedSpinner("Constraints", 1, 1, 6);
+        public readonly BoundedSpinner column = new BoundedSpinner("Variables", 1, 1, 8);
 
         public SimplexStructuredInput()
         {
