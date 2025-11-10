@@ -40,7 +40,9 @@ namespace NEA.math
         public string[] vars;
         public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) meta;
 
-        public SimplexInterationRunner(SimplexStage stage, SimplexMode mode, Fraction[,] expressions, string[] vars)
+        public SimplexInterationRunner start;
+
+        public SimplexInterationRunner(SimplexStage stage, SimplexMode mode, Fraction[,] expressions, string[] vars, SimplexInterationRunner start = null)
         {
             this.stage = stage;
             this.mode = mode;
@@ -48,6 +50,14 @@ namespace NEA.math
             this.expressions = expressions.Clone() as Fraction[,];
             this.vars = vars.Clone() as string[];
             meta = (-1, -1, null, new List<int>());
+            if (start is null)
+            {
+                this.start = this;
+            }
+            else
+            {
+                this.start = start;
+            }
         }
 
         public SimplexInterationRunner Clone()
@@ -59,7 +69,8 @@ namespace NEA.math
                 step = step,
                 expressions = (Fraction[,])expressions.Clone(),
                 vars = (string[])vars.Clone(),
-                meta = (meta.pivotCol, meta.pivotRow, meta.normalised is null ? null : (Fraction[])meta.normalised.Clone(), meta.artificalIdx.ToList())
+                meta = (meta.pivotCol, meta.pivotRow, meta.normalised is null ? null : (Fraction[])meta.normalised.Clone(), meta.artificalIdx.ToList()),
+                start = start
             };
         }
 
@@ -136,6 +147,7 @@ namespace NEA.math
                         {
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             new_runner.meta = (-1, -1, null, new List<int>());
+                            new_runner.curr = this;
                         }
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
                     }
@@ -184,6 +196,7 @@ namespace NEA.math
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             reason = "A != 0";
                             new_runner.meta = (-1, -1, null, new List<int>());
+                            new_runner.curr = this;
                         }
                         new_runner.meta.artificalIdx = artificalIdx;
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, reason);
@@ -206,6 +219,7 @@ namespace NEA.math
                         new_runner.expressions = notArtificalExpr;
                         new_runner.mode = stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
                         new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
+                        new_runner.curr = this;
                         new_runner.meta = (-1, -1, null, new List<int>());
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
                     }
