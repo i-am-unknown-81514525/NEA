@@ -54,7 +54,7 @@ namespace NEA.files
                 throw new ImportFormatException("Invalid format: Variable names must be unique.");
             }
             string[] vars = row0.Take(row0.Length - 1).ToArray(); // remove RHS
-            Fraction[,] expressions = new Fraction[splitted.Length - 1, row0.Length];
+            Fraction[,] expressions = new Fraction[row0.Length, splitted.Length - 1];
             for (int i = 1; i < splitted.Length; i++)
             {
                 string[] row = splitted[i].Split(';').Where(s => s.Length > 0).ToArray();
@@ -68,7 +68,7 @@ namespace NEA.files
                     {
                         throw new ImportFormatException($"Invalid format: Entry '{row[j]}' in line {i + 1}, column {j + 1} is not a valid fraction.");
                     }
-                    expressions[i - 1, j] = value;
+                    expressions[j, i - 1] = value;
                 }
             }
             return new SimplexInterationRunner(
