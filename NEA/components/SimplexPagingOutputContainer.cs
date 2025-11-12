@@ -3,6 +3,8 @@ using NEA.math;
 using ui.components.chainExt;
 using ui.math;
 using System.Linq;
+using ui.utils;
+using ui.fmt;
 
 namespace NEA.components
 {
@@ -89,6 +91,11 @@ namespace NEA.components
                     )
                 }
             );
+            Logger output_logger = new Logger()
+                .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
+                .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
+                .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.CYAN)
+                .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
             switcher.Add(
                 new VerticalGroupComponent()
                 {
@@ -99,6 +106,8 @@ namespace NEA.components
                         .WithHAlign<EmptyStore, TextLabel>(ui.utils.HorizontalAlignment.LEFT),
                         new Fraction(1, 1)
                     ),
+                    (output_logger, 1), 
+                    (new FileSaveBar("Export latex file:", output_logger, ToLatex(outputs)), 1),
                     (
                         new HorizontalGroupComponent() {
                             (new PageSwitcher(switcher, "Last", last_idx), new Fraction(1, 4)),
