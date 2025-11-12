@@ -52,29 +52,6 @@ namespace NEA.components
                     (logger, 1),
                     (
                         (new FileSaveBar("Export filename: ", logger, ExportHandler.ExportToContent(runner)), 1)
-                        // new HorizontalGroupComponent() { (new TextLabel("Export filename: "), 17),
-                        //     filename_input,
-                        //     (new Button("Export").WithHandler(
-                        //         (_)=> {
-                        //             try
-                        //             {
-                        //                 if (filename_input.content.Trim() == "")
-                        //                 {
-                        //                     throw new Exception("Filename cannot be empty");
-                        //                 }
-                        //                 ExportHandler.ExportToFile(
-                        //                     runner,
-                        //                     filename_input.content
-                        //                 );
-                        //                 logger.Push($"Exported to {filename_input.content}");
-                        //             }
-                        //             catch (Exception ex)
-                        //             {
-                        //                 logger.Push(ex.Message);
-                        //                 logger.WithForeground<EmptyStore, Logger>(ForegroundColorEnum.RED);
-                        //             }
-                        //         }
-                        //     ), 6)}, 1
                     )
                 }
             );
