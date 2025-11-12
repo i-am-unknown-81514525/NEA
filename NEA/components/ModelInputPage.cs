@@ -22,7 +22,8 @@ namespace NEA.components
             inner_switcher = new Switcher() {
                 new VerticalGroupComponent() {
                     model_input,
-                    (   
+                    (logger, 1),
+                    (
                         new HorizontalGroupComponent() {
                             new PageSwitcher(outer_switcher, "Back", 0),
                             new Button("Start").WithHandler(
