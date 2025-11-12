@@ -335,6 +335,7 @@ namespace NEA.math
                 for (int y = 1; y < table.GetSize().y + 1; y++)
                 {
                     string cellContent = ((SimplexTableauValueField)table[x, y]).content.Trim();
+                    if (cellContent == "") cellContent = "0";
                     if (!Fraction.TryParse(cellContent, out Fraction v)) throw new SimplexError($"Invalid fraction value at cell ({x + Const.DISPLAY_INDEX_OFFSET}, {y}): {cellContent + Const.DISPLAY_INDEX_OFFSET}");
                     values[x, y - 1] = v;
                 }
