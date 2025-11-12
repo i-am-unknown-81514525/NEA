@@ -4,7 +4,7 @@ using ui.math;
 using ui.components.chainExt;
 using ui.utils;
 using ui.fmt;
-using System;
+using System.Linq;
 using NEA.files;
 
 namespace NEA.components
@@ -42,7 +42,12 @@ namespace NEA.components
         {
             this.state = state;
             this.runner = runner;
-            this.reason = reason;
+            string stage_name = "ONE";
+            if (new[] { SimplexStage.TWO_STAGE_MAX, SimplexStage.TWO_STAGE_MIN }.Contains(runner.stage))
+            {
+                stage_name = "TWO";
+            }
+            this.reason = $"it:{runner.it+1}, Step:{(int)runner.step}, Stage:{stage_name}: {reason}";
             // SingleLineInputField filename_input = new SingleLineInputField();
             logger.Push(reason);
             Add(
