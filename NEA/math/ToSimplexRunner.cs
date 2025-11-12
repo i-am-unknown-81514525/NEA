@@ -70,20 +70,22 @@ namespace NEA.math
             }
             catch (TokenParseException e)
             {
-                ui.DEBUG.DebugStore.AppendLine($"Failed to parse model input: {e.Message}");
-                return null; // TODO: Error
+                throw new SimplexError($"Failed to parse model input: {e.Message}");
             }
             catch (PrattParseError e)
             {
-                ui.DEBUG.DebugStore.AppendLine($"Pratt Parse failure: {e.Message}");
-                return null; // TODO: Error
+                throw new SimplexError($"Pratt Parse failure: {e.Message}");
+            }
+            catch (DivideByZeroException e)
+            {
+                throw new SimplexError($"Divide by zero error when parsing model input: {e.Message}");
             }
 
             if (!stream.IsEof)
             {
-                ui.DEBUG.DebugStore.AppendLine("Warning: Not End of line");
-                return null; // TODO: Error
+                throw new SimplexError("Not End of line when parsing final token");
             }
+            
 
             ExprResult objective = (ExprResult)result.parseResult[2];
 
@@ -109,16 +111,13 @@ namespace NEA.math
             {
                 if (term.term_name == "") continue;
                 if (!IsValidVariableName(term.term_name)) {
-                    ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {term.term_name}");
-                    return null;
+                    throw new SimplexError($"Invalid variable name: {term.term_name}");
                 }
                 if (IsArtificialVariable(term.term_name) || IsSlackVariable(term.term_name)) {
-                    ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {term.term_name}");
-                    return null;
+                    throw new SimplexError($"Invalid variable name: {term.term_name}");
                 }
                 if (varNames.Contains(term.term_name)) {
-                    ui.DEBUG.DebugStore.AppendLine($"Duplicate variable name: {term.term_name}");
-                    return null;
+                    throw new SimplexError($"Duplicate variable name: {term.term_name}");
                 }
                 varNames.Add(term.term_name);
             }
@@ -135,12 +134,10 @@ namespace NEA.math
                     } else
                     {
                         if (!IsValidVariableName(t.term_name)) {
-                            ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {t.term_name}");
-                            return null;
+                            throw new SimplexError($"Invalid variable name: {t.term_name}");
                         }
                         if (IsArtificialVariable(t.term_name) || IsSlackVariable(t.term_name)) {
-                            ui.DEBUG.DebugStore.AppendLine($"Invalid variable name: {t.term_name}");
-                            return null;
+                            throw new SimplexError($"Invalid variable name: {t.term_name}");
                         }
                         if (!varNames.Contains(t.term_name))
                         {
@@ -319,8 +316,8 @@ namespace NEA.math
             for (int x = 0; x < table.GetSize().x; x++)
             {
                 string varName = ((SimplexTableauVariableField)table[x, 0]).content.Trim();
-                if (!IsValidVariableName(varName)) return null;
-                if (varNames.Contains(varName)) return null;
+                if (!IsValidVariableName(varName)) throw new SimplexError($"Invalid variable name: {varName}");
+                if (varNames.Contains(varName)) throw new SimplexError($"Duplicate variable name: {varName}");
                 if (IsArtificialVariable(varName)) has_artifical = true;
                 varNames.Add(varName);
             }
@@ -372,7 +369,7 @@ namespace NEA.math
                 if (!(output.next is null)) results.Add(output);
                 if (output.state != SimplexState.NOT_ENDED)
                 {
-                    if (output.state == SimplexState.FAILED) ui.DEBUG.DebugStore.AppendLine("Simplex method failed to complete.");
+                    if (output.state == SimplexState.FAILED) throw new SimplexError("Simplex method failed to complete.");
                     else if (output.state == SimplexState.ENDED) ui.DEBUG.DebugStore.AppendLine("Simplex method completed successfully.");
                     break;
                 }
