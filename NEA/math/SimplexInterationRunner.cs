@@ -36,6 +36,8 @@ namespace NEA.math
         public SimplexMode mode;
 
         public SimplexStep step;
+
+        public int it = 0;
         public Fraction[,] expressions;
         public string[] vars;
         public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) meta;
@@ -56,6 +58,7 @@ namespace NEA.math
             this.step = step;
             this.expressions = expressions.Clone() as Fraction[,];
             this.vars = vars.Clone() as string[];
+            this.it = (start is null) ? 0 : start.it;
             if (meta is null)
             {
                 this.meta = (-1, -1, null, new List<int>());
@@ -160,7 +163,8 @@ namespace NEA.math
                         {
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             new_runner.meta = (-1, -1, null, new List<int>());
-                            new_runner.start = this;
+                            new_runner.start = new_runner;
+                            new_runner.it += 1;
                         }
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
                     }
@@ -209,7 +213,8 @@ namespace NEA.math
                             new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
                             reason = "A != 0";
                             new_runner.meta = (-1, -1, null, new List<int>());
-                            new_runner.start = this;
+                            new_runner.start = new_runner;
+                            new_runner.it += 1;
                         }
                         new_runner.meta.artificalIdx = artificalIdx;
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, reason);
@@ -232,7 +237,8 @@ namespace NEA.math
                         new_runner.expressions = notArtificalExpr;
                         new_runner.mode = stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
                         new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
-                        new_runner.start = this;
+                        new_runner.start = new_runner;
+                            new_runner.it += 1;
                         new_runner.meta = (-1, -1, null, new List<int>());
                         return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
                     }
