@@ -57,7 +57,7 @@ namespace NEA.components
             );
         }
 
-        protected override void OnMount()
+        protected override void OnVisibleInternal()
         {
             base.OnMount();
             logger.WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
