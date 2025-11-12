@@ -28,8 +28,12 @@ namespace NEA.components
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
             inner_switcher = new Switcher() {
                 new VerticalGroupComponent() {
-                    (filename_input, 1),
                     new Padding(),
+                    (new HorizontalGroupComponent()
+                    {
+                        (new TextLabel("Filename: "), 10),
+                        filename_input
+                    }, 1),
                     (logger, 1),
                     (
                         new HorizontalGroupComponent() {
