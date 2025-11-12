@@ -246,7 +246,7 @@ namespace NEA.math
         private int? GetColIdxByMode(SimplexMode mode)
         {
             var expressions = this.expressions;
-            var selection = Enumerable.Range(0, expressions.GetLength(0) - 1)
+            var selection = Enumerable.Range(1, expressions.GetLength(0) - 1)
                 .Select(x => (x, expressions[x, 0]))
                 .Select(((int i, Fraction frac) item) => mode == SimplexMode.MAX ? item : (item.i, -item.frac))
                 .Where(item => item.Item2 < 0)
