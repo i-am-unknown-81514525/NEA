@@ -51,11 +51,11 @@ namespace NEA.components
                 {
                     (label, info.Length),
                     file_name_input,
-                    new Button("Save").WithHandler(
+                    (new Button("Save").WithHandler(
                         (_)=> {
                             Save(false);
                         }
-                    )
+                    ), 6)
                 }
             );
             switcher.Add(
