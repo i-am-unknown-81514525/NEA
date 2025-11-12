@@ -47,12 +47,13 @@ namespace NEA.components
                                                 inner_switcher
                                             )
                                         );
-                                        inner_switcher.SwitchTo(1);
                                     }
                                     catch (Exception ex)
                                     {
                                         logger.Push(ex.Message);
+                                        return;
                                     }
+                                    inner_switcher.SwitchTo(1);
                                 }
                             )
                         }
