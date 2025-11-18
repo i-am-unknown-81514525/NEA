@@ -11,25 +11,25 @@ namespace NEA.files
         public ExportException(string message) : base(message) { }
     }
 
-    public class ExportIOException : ExportException
+    public class ExportIoException : ExportException
     {
-        public ExportIOException(string message) : base(message) { }
+        public ExportIoException(string message) : base(message) { }
     }
 
     public static class ExportHandler
     {
         public static string ExportToContent(SimplexInterationRunner runner)
         {
-            SimplexInterationRunner exporting_runner = runner.start;
+            SimplexInterationRunner exportingRunner = runner.Start;
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Join(";", exporting_runner.vars) + ";RHS");
-            for (int j = 0; j < exporting_runner.expressions.GetLength(1); j++)
+            sb.AppendLine(string.Join(";", exportingRunner.Vars) + ";RHS");
+            for (int j = 0; j < exportingRunner.Expressions.GetLength(1); j++)
             {
                 List<string> row = new List<string>();
-                for (int i = 0; i < exporting_runner.expressions.GetLength(0); i++)
+                for (int i = 0; i < exportingRunner.Expressions.GetLength(0); i++)
                 {
-                    row.Add(exporting_runner.expressions[i, j].ToString());
+                    row.Add(exportingRunner.Expressions[i, j].ToString());
                 }
                 sb.AppendLine(string.Join(";", row));
             }
@@ -45,7 +45,7 @@ namespace NEA.files
             }
             catch (Exception ex)
             {
-                throw new ExportIOException("Failed to write to file: " + ex.Message);
+                throw new ExportIoException("Failed to write to file: " + ex.Message);
             }
         }
     }

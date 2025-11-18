@@ -6,51 +6,51 @@ namespace NEA.components
 
     public class FileSaveBar : Container
     {
-        public readonly TextLabel label = new TextLabel("");
-        public readonly TextLabel overwrite_message = new TextLabel("");
+        public readonly TextLabel Label = new TextLabel("");
+        public readonly TextLabel OverwriteMessage = new TextLabel("");
 
-        public readonly SingleLineInputField file_name_input = new SingleLineInputField("");
+        public readonly SingleLineInputField FileNameInput = new SingleLineInputField();
 
-        protected readonly Logger logger = null;
+        protected readonly Logger Logger = null;
 
-        protected readonly Switcher switcher = new Switcher();
+        protected readonly Switcher Switcher = new Switcher();
 
-        public string save_content = "";
+        public string SaveContent = "";
 
         protected void Save(bool force)
         {
-            string filename = file_name_input.content.Trim();
-            string content = save_content ?? "";
+            string filename = FileNameInput.content.Trim();
+            string content = SaveContent ?? "";
             if (filename.Length == 0)
             {
-                logger?.Push("Filename cannot be empty.");
-                switcher.SwitchTo(0);
+                Logger?.Push("Filename cannot be empty.");
+                Switcher.SwitchTo(0);
                 return;
             }
             if (System.IO.File.Exists(filename) && !force)
             {
-                switcher.SwitchTo(1);
+                Switcher.SwitchTo(1);
                 return;
             }
             try {
                 System.IO.File.WriteAllText(filename, content);
-                logger.Push($"File '{filename}' saved successfully.");
+                Logger.Push($"File '{filename}' saved successfully.");
             } catch (System.Exception e){
-                logger.Push($"Error saving file '{filename}': {e.Message}");
+                Logger.Push($"Error saving file '{filename}': {e.Message}");
             }
-            switcher.SwitchTo(0);
+            Switcher.SwitchTo(0);
         }
 
-        public FileSaveBar(string info, Logger logger = null, string save_content = "") : base()
+        public FileSaveBar(string info, Logger logger = null, string saveContent = "") : base()
         {
-            label.text = info;
-            this.logger = logger;
-            this.save_content = save_content;
-            switcher.Add(
+            Label.text = info;
+            this.Logger = logger;
+            this.SaveContent = saveContent;
+            Switcher.Add(
                 new HorizontalGroupComponent()
                 {
-                    (label, info.Length),
-                    file_name_input,
+                    (Label, info.Length),
+                    FileNameInput,
                     (new Button("Save").WithHandler(
                         (_)=> {
                             Save(false);
@@ -58,13 +58,13 @@ namespace NEA.components
                     ), 6)
                 }
             );
-            switcher.Add(
+            Switcher.Add(
                 new HorizontalGroupComponent()
                 {
-                    overwrite_message,
+                    OverwriteMessage,
                     (new Button("Back").WithHandler(
                         (_)=> {
-                            switcher.SwitchTo(0);
+                            Switcher.SwitchTo(0);
                         }
                     ), 6),
                     (new Button("Save Anyway").WithHandler(
@@ -74,7 +74,7 @@ namespace NEA.components
                     ), 13)
                 }
             );
-            Add(switcher);
+            Add(Switcher);
         }
 
 

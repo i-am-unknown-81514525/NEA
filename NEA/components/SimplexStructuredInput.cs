@@ -4,22 +4,22 @@ namespace NEA.components
 {
     public class SimplexStructuredInput : Container
     {
-        public readonly StructuredInputTable table = new StructuredInputTable();
-        public readonly BoundedSpinner row = new BoundedSpinner("Constraints", 1, 1, 6);
-        public readonly BoundedSpinner column = new BoundedSpinner("Variables", 1, 1, 8);
+        public readonly StructuredInputTable Table = new StructuredInputTable();
+        public readonly BoundedSpinner Row = new BoundedSpinner("Constraints", 1, 1, 6);
+        public readonly BoundedSpinner Column = new BoundedSpinner("Variables", 1, 1, 8);
 
         public SimplexStructuredInput()
         {
-            row.onChange = (value) => table.ForceResize((table.GetSize().x, value));
-            column.onChange = (value) => table.ForceResize((value, table.GetSize().y));
-            table.Resize((column.amount, row.amount));
+            Row.OnChange = (value) => Table.ForceResize((Table.GetSize().x, value));
+            Column.OnChange = (value) => Table.ForceResize((value, Table.GetSize().y));
+            Table.Resize((Column.amount, Row.amount));
             Add(
                 new VerticalGroupComponent()
                 {
-                    table,
+                    Table,
                     (new HorizontalGroupComponent() {
-                        row,
-                        column
+                        Row,
+                        Column
                     }, 1)
                 }
             );

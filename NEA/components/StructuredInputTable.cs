@@ -11,11 +11,11 @@ namespace NEA.components
 {
     public class ComparsionStateStore : ComponentStore
     {
-        public math_parser.atom.ComparsionSymbolAtom atom;
+        public math_parser.atom.ComparsionSymbolAtom Atom;
 
         public ComparsionStateStore(math_parser.atom.ComparsionSymbolAtom atom) : base()
         {
-            this.atom = atom;
+            this.Atom = atom;
         }
     }
 
@@ -28,19 +28,19 @@ namespace NEA.components
 
         public ComparisionStateButton(math_parser.atom.ComparsionSymbolAtom symbol = null) : base()
         {
-            store.atom = symbol ?? math_parser.atom.ComparsionSymbolAtom.Le;
-            text = store.atom.literal;
-            onClickHandler = (btn, loc) =>
+            Store.Atom = symbol ?? math_parser.atom.ComparsionSymbolAtom.Le;
+            text = Store.Atom.Literal;
+            OnClickHandler = (btn, loc) =>
             {
-                btn.store.atom = (
+                btn.Store.Atom = (
                     new Dictionary<math_parser.atom.ComparsionSymbolAtom, math_parser.atom.ComparsionSymbolAtom>()
                     {
                         { math_parser.atom.ComparsionSymbolAtom.Le, math_parser.atom.ComparsionSymbolAtom.Ge },
                         { math_parser.atom.ComparsionSymbolAtom.Ge, math_parser.atom.ComparsionSymbolAtom.Eq },
                         { math_parser.atom.ComparsionSymbolAtom.Eq, math_parser.atom.ComparsionSymbolAtom.Le },
                     }
-                )[btn.store.atom];
-                text = btn.store.atom.literal;
+                )[btn.Store.Atom];
+                text = btn.Store.Atom.Literal;
 
             };
             foreground = ForegroundColorEnum.BLACK;
@@ -51,13 +51,13 @@ namespace NEA.components
     {
         public override (int x, int y) GetSize()
         {
-            return ((inner.GetSize().x - 5) / 3 + 1, inner.GetSize().y - 1);
+            return ((Inner.GetSize().x - 5) / 3 + 1, Inner.GetSize().y - 1);
         }
 
-        public static int Mod(int v, int base_v)
+        public static int Mod(int v, int baseV)
         {
-            int result = v % base_v;
-            if (result < 0) result += base_v; // So it can be always positive
+            int result = v % baseV;
+            if (result < 0) result += baseV; // So it can be always positive
             return result;
         }
 
@@ -94,7 +94,7 @@ namespace NEA.components
                 case 0:
                     return new SimplexTableauValueField();
                 case 1:
-                    int idx = (loc.x - 5) / 3 + Const.DISPLAY_INDEX_OFFSET;
+                    int idx = (loc.x - 5) / 3 + Const.DisplayIndexOffset;
                     return new TextLabel($"x_{idx}");
                 case 2:
                     return new TextLabel("+");
@@ -153,55 +153,55 @@ namespace NEA.components
 
         public override void AddColumn(SplitAmount amount = null)
         {
-            int cur_v = GetSize().x - 1 + Const.DISPLAY_INDEX_OFFSET;
-            string text = $"x_{cur_v}";
-            int idx = inner.GetSize().x - 2;
-            inner.InsertColumn(idx, text.Length); // var
-            inner.InsertColumn(idx, amount); // input field
-            inner.InsertColumn(idx, 3); // plus sign
-            for (int y = 0; y < inner.GetSize().y; y++)
+            int curV = GetSize().x - 1 + Const.DisplayIndexOffset;
+            string text = $"x_{curV}";
+            int idx = Inner.GetSize().x - 2;
+            Inner.InsertColumn(idx, text.Length); // var
+            Inner.InsertColumn(idx, amount); // input field
+            Inner.InsertColumn(idx, 3); // plus sign
+            for (int y = 0; y < Inner.GetSize().y; y++)
             {
                 for (int x = idx; x < idx + 3; x++)
                 {
-                    inner[x, y] = ComponentAt(inner, (x, y));
+                    Inner[x, y] = ComponentAt(Inner, (x, y));
                 }
             }
         }
-        
+
         public override void AddRow(SplitAmount amount = null)
         {
-            int idx = inner.GetSize().y;
-            inner.AddRow(amount);
-            for (int x = 0; x < inner.GetSize().x; x++)
+            int idx = Inner.GetSize().y;
+            Inner.AddRow(amount);
+            for (int x = 0; x < Inner.GetSize().x; x++)
             {
-                inner[x, idx] = ComponentAt(inner, (x, idx));
+                Inner[x, idx] = ComponentAt(Inner, (x, idx));
             }
         }
 
         public override void RemoveColumn(int idx)
         {
-            idx = inner.GetSize().x - 5;
+            idx = Inner.GetSize().x - 5;
             for (int i = 0; i < 3; i++)
-                inner.RemoveColumn(idx);
+                Inner.RemoveColumn(idx);
         }
 
         public override void RemoveRow(int idx)
         {
-            idx = inner.GetSize().y - 1;
-            inner.RemoveRow(idx);
+            idx = Inner.GetSize().y - 1;
+            Inner.RemoveRow(idx);
         }
 
         public (ExprResult, EqResult[]) Extract()
         {
             ExprResult comparsion = null;
             List<EqResult> expressions = new List<EqResult>();
-            for (int y = 0; y < inner.GetSize().y; y++)
+            for (int y = 0; y < Inner.GetSize().y; y++)
             {
-                Term[] terms = new Term[(inner.GetSize().x - 5) / 3 + 1];
-                for (int x = 1; x < inner.GetSize().x - 2; x += 3)
+                Term[] terms = new Term[(Inner.GetSize().x - 5) / 3 + 1];
+                for (int x = 1; x < Inner.GetSize().x - 2; x += 3)
                 {
-                    SimplexTableauVariableField field = inner[x, y] as SimplexTableauVariableField;
-                    TextLabel varLabel = inner[x + 1, y] as TextLabel;
+                    SimplexTableauVariableField field = Inner[x, y] as SimplexTableauVariableField;
+                    TextLabel varLabel = Inner[x + 1, y] as TextLabel;
                     terms[(x - 1) / 3] = new Term(Fraction.Parse(field.content), varLabel.text);
                 }
                 if (y == 0)
@@ -209,10 +209,10 @@ namespace NEA.components
                     comparsion = new ExprResult(terms);
                     continue;
                 }
-                ComparisionStateButton compButton = inner[inner.GetSize().x - 2, y] as ComparisionStateButton;
-                SimplexTableauVariableField rhsField = inner[inner.GetSize().x - 1, y] as SimplexTableauVariableField;
+                ComparisionStateButton compButton = Inner[Inner.GetSize().x - 2, y] as ComparisionStateButton;
+                SimplexTableauVariableField rhsField = Inner[Inner.GetSize().x - 1, y] as SimplexTableauVariableField;
                 ExprResult expr = new ExprResult(terms) - (ExprResult)(Term)Fraction.Parse(rhsField.content);
-                expressions.Add(new EqResult(expr, compButton.store.atom));
+                expressions.Add(new EqResult(expr, compButton.Store.Atom));
             }
             if (comparsion == null)
                 throw new System.Exception("Unreachable code reached in StructuredInputTable.Extract");

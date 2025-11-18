@@ -14,15 +14,15 @@ namespace NEA.math
 {
     struct Meta
     {
-        public readonly int? artifical;
-        public readonly int slack;
-        public readonly EqResult result;
+        public readonly int? Artifical;
+        public readonly int Slack;
+        public readonly EqResult Result;
 
         public Meta(int? artifical, int slack, EqResult result)
         {
-            this.artifical = artifical;
-            this.slack = slack;
-            this.result = result;
+            this.Artifical = artifical;
+            this.Slack = slack;
+            this.Result = result;
         }
     }
 
@@ -81,21 +81,21 @@ namespace NEA.math
                 throw new SimplexError($"Divide by zero error when parsing model input: {e.Message}");
             }
 
-            if (!stream.IsEof)
+            if (!stream.isEof)
             {
                 throw new SimplexError("Not End of line when parsing final token");
             }
-            
 
-            ExprResult objective = (ExprResult)result.parseResult[2];
 
-            RepeatListResult<TokenSequenceResult<ParseResult>> eqs_token = (RepeatListResult<TokenSequenceResult<ParseResult>>)result.parseResult[6];
+            ExprResult objective = (ExprResult)result.ParseResult[2];
+
+            RepeatListResult<TokenSequenceResult<ParseResult>> eqsToken = (RepeatListResult<TokenSequenceResult<ParseResult>>)result.ParseResult[6];
 
             List<EqResult> eqs = new List<EqResult>();
 
-            foreach (TokenSequenceResult<ParseResult> res in eqs_token)
+            foreach (TokenSequenceResult<ParseResult> res in eqsToken)
             {
-                eqs.Add((EqResult)res.parseResult[0]);
+                eqs.Add((EqResult)res.ParseResult[0]);
             }
             return Translate(objective, eqs.ToArray());
         }
@@ -105,94 +105,94 @@ namespace NEA.math
         public static SimplexInterationRunner Translate(ExprResult optimal, EqResult[] constraints)
         {
             List<string> varNames = new List<string>();
-            int used_artifical = 0;
-            int used_slack = 0;
-            foreach (Term term in optimal.terms)
+            int usedArtifical = 0;
+            int usedSlack = 0;
+            foreach (Term term in optimal.Terms)
             {
-                if (term.term_name == "") continue;
-                if (!IsValidVariableName(term.term_name)) {
-                    throw new SimplexError($"Invalid variable name: {term.term_name}");
+                if (term.TermName == "") continue;
+                if (!IsValidVariableName(term.TermName)) {
+                    throw new SimplexError($"Invalid variable name: {term.TermName}");
                 }
-                if (IsArtificialVariable(term.term_name) || IsSlackVariable(term.term_name)) {
-                    throw new SimplexError($"Invalid variable name: {term.term_name}");
+                if (IsArtificialVariable(term.TermName) || IsSlackVariable(term.TermName)) {
+                    throw new SimplexError($"Invalid variable name: {term.TermName}");
                 }
-                if (varNames.Contains(term.term_name)) {
-                    throw new SimplexError($"Duplicate variable name: {term.term_name}");
+                if (varNames.Contains(term.TermName)) {
+                    throw new SimplexError($"Duplicate variable name: {term.TermName}");
                 }
-                varNames.Add(term.term_name);
+                varNames.Add(term.TermName);
             }
 
-            List<Meta> construct_meta = new List<Meta>();
+            List<Meta> constructMeta = new List<Meta>();
             foreach (EqResult eq in constraints)
             {
-                Fraction lhs_literal = 0; // LHS, which is opposite to RHS
-                foreach (Term t in eq.exprs.terms)
+                Fraction lhsLiteral = 0; // LHS, which is opposite to RHS
+                foreach (Term t in eq.Exprs.Terms)
                 {
-                    if (t.term_name == "")
+                    if (t.TermName == "")
                     {
-                        lhs_literal += t.coefficient.Transitivity();
+                        lhsLiteral += t.Coefficient.Transitivity();
                     } else
                     {
-                        if (!IsValidVariableName(t.term_name)) {
-                            throw new SimplexError($"Invalid variable name: {t.term_name}");
+                        if (!IsValidVariableName(t.TermName)) {
+                            throw new SimplexError($"Invalid variable name: {t.TermName}");
                         }
-                        if (IsArtificialVariable(t.term_name) || IsSlackVariable(t.term_name)) {
-                            throw new SimplexError($"Invalid variable name: {t.term_name}");
+                        if (IsArtificialVariable(t.TermName) || IsSlackVariable(t.TermName)) {
+                            throw new SimplexError($"Invalid variable name: {t.TermName}");
                         }
-                        if (!varNames.Contains(t.term_name))
+                        if (!varNames.Contains(t.TermName))
                         {
-                            varNames.Add(t.term_name);
+                            varNames.Add(t.TermName);
                         }
                     }
                 }
-                if (eq.comparsionAtom == math_parser.atom.ComparsionSymbolAtom.Eq)
+                if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Eq)
                 {
-                    if (lhs_literal > 0) // 1 + 3x = 0 -> -1 - 3x = 0 -> -3x = 1 -> - 3x <= 1 (no a), -3x >= 1 (with a)
+                    if (lhsLiteral > 0) // 1 + 3x = 0 -> -1 - 3x = 0 -> -3x = 1 -> - 3x <= 1 (no a), -3x >= 1 (with a)
                     {
-                        construct_meta.Add(new Meta(null, used_slack, new EqResult(-eq.exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
-                        used_slack++;
-                        construct_meta.Add(new Meta(used_artifical, used_slack, new EqResult(-eq.exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
-                        used_artifical++;
-                        used_slack++;
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        usedSlack++;
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        usedArtifical++;
+                        usedSlack++;
                     }
                     else
                     { // -1 + 3x = 0 -> 3x = 1 -> 3x <= 1 (no a), 3x >= 1 (with a)
                       // 0 + 3x = 0 -> 3x = 0 -> 3x <= 0 (no a), 3x >= 0 (with a)
-                        construct_meta.Add(new Meta(null, used_slack, new EqResult(eq.exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
-                        used_slack++;
-                        construct_meta.Add(new Meta(used_artifical, used_slack, new EqResult(eq.exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
-                        used_artifical++;
-                        used_slack++;
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        usedSlack++;
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        usedArtifical++;
+                        usedSlack++;
                     }
                 }
-                else if (eq.comparsionAtom == math_parser.atom.ComparsionSymbolAtom.Le)
+                else if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Le)
                 {
-                    if (lhs_literal > 0) // 1 + 3x <= 0 -> -1 - 3x >= 0 3x >= 1 (with a)
+                    if (lhsLiteral > 0) // 1 + 3x <= 0 -> -1 - 3x >= 0 3x >= 1 (with a)
                     {
-                        construct_meta.Add(new Meta(used_artifical, used_slack, new EqResult(-eq.exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
-                        used_artifical++;
-                        used_slack++;
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        usedArtifical++;
+                        usedSlack++;
                     }
                     else
                     { // -1 + 3x <= 0 -> 3x <= 1
                       // 0 + 3x <= 0 -> 3x <= 0
-                        construct_meta.Add(new Meta(null, used_slack, new EqResult(eq.exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
-                        used_slack++;
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        usedSlack++;
                     }
                 }
-                else if (eq.comparsionAtom == math_parser.atom.ComparsionSymbolAtom.Ge)
+                else if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Ge)
                 {
-                    if (lhs_literal >= 0) // 1 + 3x >= 0 -> -1 - 3x <= 0 -> -3x <= 1 (no a)
+                    if (lhsLiteral >= 0) // 1 + 3x >= 0 -> -1 - 3x <= 0 -> -3x <= 1 (no a)
                     // 0 + 3x >= 0 -> -3x <= 0 (no a)
                     {
-                        construct_meta.Add(new Meta(null, used_slack, new EqResult(-eq.exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
-                        used_slack++;
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        usedSlack++;
                     }
                     else
                     { // -1 + 3x >= 0 -> 3x >= 1 (with a)
-                        construct_meta.Add(new Meta(used_artifical, used_slack, new EqResult(eq.exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
-                        used_artifical++;
-                        used_slack++;
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        usedArtifical++;
+                        usedSlack++;
                     }
                 }
             }
@@ -206,128 +206,128 @@ namespace NEA.math
             // A +2x + y -s2 - 120
 
             // + 2: P, RHS, conditional: A // + 1: objective, conditional: 2 stage objective
-            Fraction[,] values = new Fraction[varNames.Count + used_artifical + used_slack + 2  + (used_artifical > 0 ? 1 : 0), construct_meta.Count + 1 + (used_artifical > 0 ? 1 : 0)];
+            Fraction[,] values = new Fraction[varNames.Count + usedArtifical + usedSlack + 2  + (usedArtifical > 0 ? 1 : 0), constructMeta.Count + 1 + (usedArtifical > 0 ? 1 : 0)];
             // Initialize to 0
-            for (int _i = 0; _i < values.GetLength(0); _i++)
+            for (int i = 0; i < values.GetLength(0); i++)
             {
-                for (int _j = 0; _j < values.GetLength(1); _j++)
+                for (int j = 0; j < values.GetLength(1); j++)
                 {
-                    values[_i, _j] = 0;
+                    values[i, j] = 0;
                 }
             }
-            int padding_start = used_artifical > 0 ? 2 : 1;
-            if (used_artifical > 0)
+            int paddingStart = usedArtifical > 0 ? 2 : 1;
+            if (usedArtifical > 0)
             {
                 values[0, 0] = 1;
                 values[1, 0] = 0;
-                foreach (Meta m in construct_meta) // A row
+                foreach (Meta m in constructMeta) // A row
                 {
-                    if (m.artifical is null) continue;
-                    foreach (Term t in m.result.exprs.terms)
+                    if (m.Artifical is null) continue;
+                    foreach (Term t in m.Result.Exprs.Terms)
                     {
-                        if (t.term_name == "")
+                        if (t.TermName == "")
                         {
-                            values[values.GetLength(0) - 1, 0] -= t.coefficient.Transitivity(); // -(-120) on RHS so getting 120
+                            values[values.GetLength(0) - 1, 0] -= t.Coefficient.Transitivity(); // -(-120) on RHS so getting 120
                         }
                         else
                         {
-                            int var_idx = varNames.IndexOf(t.term_name);
-                            if (var_idx >= 0)
+                            int varIdx = varNames.IndexOf(t.TermName);
+                            if (varIdx >= 0)
                             {
-                                values[var_idx + padding_start, 0] += t.coefficient.Transitivity();
+                                values[varIdx + paddingStart, 0] += t.Coefficient.Transitivity();
                             }
                         }
                     }
-                    values[padding_start + varNames.Count + m.slack, 0] -= 1;
+                    values[paddingStart + varNames.Count + m.Slack, 0] -= 1;
                 }
             }
-            values[padding_start - 1, padding_start - 1] = 1; // P variable
-            foreach (Term t in optimal.terms) // P row
+            values[paddingStart - 1, paddingStart - 1] = 1; // P variable
+            foreach (Term t in optimal.Terms) // P row
             {
-                if (t.term_name == "") continue;
-                int var_idx = varNames.IndexOf(t.term_name);
-                if (var_idx >= 0)
+                if (t.TermName == "") continue;
+                int varIdx = varNames.IndexOf(t.TermName);
+                if (varIdx >= 0)
                 {
-                    values[var_idx + padding_start, padding_start - 1] = -t.coefficient.Transitivity();
+                    values[varIdx + paddingStart, paddingStart - 1] = -t.Coefficient.Transitivity();
                     // P = 1x + 3y
                     // P - 1x - 3y = 0
                 }
             }
-            for (int i = 0; i < construct_meta.Count; i++)
+            for (int i = 0; i < constructMeta.Count; i++)
             {
-                Meta m = construct_meta[i];
-                foreach (Term t in m.result.exprs.terms)
+                Meta m = constructMeta[i];
+                foreach (Term t in m.Result.Exprs.Terms)
                 {
-                    if (t.term_name == "")
+                    if (t.TermName == "")
                     {
-                        values[values.GetLength(0) - 1, i + padding_start] += -t.coefficient.Transitivity(); // -(-120) on RHS so getting 120
+                        values[values.GetLength(0) - 1, i + paddingStart] += -t.Coefficient.Transitivity(); // -(-120) on RHS so getting 120
                     }
                     else
                     {
-                        int var_idx = varNames.IndexOf(t.term_name);
-                        if (var_idx >= 0)
+                        int varIdx = varNames.IndexOf(t.TermName);
+                        if (varIdx >= 0)
                         {
-                            values[var_idx + padding_start, i + padding_start] += t.coefficient.Transitivity();
+                            values[varIdx + paddingStart, i + paddingStart] += t.Coefficient.Transitivity();
                         }
                     }
                 }
-                if (m.artifical is null)
+                if (m.Artifical is null)
                 {
-                    values[varNames.Count + padding_start + m.slack, i + padding_start] = 1;
+                    values[varNames.Count + paddingStart + m.Slack, i + paddingStart] = 1;
                 }
                 else
                 {
-                    values[varNames.Count + padding_start + m.slack, i + padding_start] = -1;
-                    values[varNames.Count + padding_start + used_slack + m.artifical.Value, i + padding_start] = 1;
+                    values[varNames.Count + paddingStart + m.Slack, i + paddingStart] = -1;
+                    values[varNames.Count + paddingStart + usedSlack + m.Artifical.Value, i + paddingStart] = 1;
                 }
             }
 
-            List<string> full_vars = new List<string>();
-            if (used_artifical > 0)
+            List<string> fullVars = new List<string>();
+            if (usedArtifical > 0)
             {
-                full_vars.Add("A");
+                fullVars.Add("A");
             }
-            full_vars.Add("P");
+            fullVars.Add("P");
             foreach (string v in varNames)
             {
-                full_vars.Add(v);
+                fullVars.Add(v);
             }
-            for (int i = 0; i < used_slack; i++)
+            for (int i = 0; i < usedSlack; i++)
             {
-                full_vars.Add($"s_{i + 1}");
+                fullVars.Add($"s_{i + 1}");
             }
-            for (int i = 0; i < used_artifical; i++)
+            for (int i = 0; i < usedArtifical; i++)
             {
-                full_vars.Add($"a_{i + 1}");
+                fullVars.Add($"a_{i + 1}");
             }
 
             return new SimplexInterationRunner(
-                used_artifical > 0 ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
-                used_artifical > 0 ? SimplexMode.MIN : SimplexMode.MAX,
+                usedArtifical > 0 ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
+                usedArtifical > 0 ? SimplexMode.MIN : SimplexMode.MAX,
                 values,
-                full_vars.ToArray()
+                fullVars.ToArray()
             );
         }
 
         public static SimplexInterationRunner Translate(SimplexInputTable table)
         {
             List<string> varNames = new List<string>();
-            bool has_artifical = false;
+            bool hasArtifical = false;
             for (int x = 0; x < table.GetSize().x; x++)
             {
                 string varName = ((SimplexTableauVariableField)table[x, 0]).content.Trim();
                 if (!IsValidVariableName(varName)) throw new SimplexError($"Invalid variable name: {varName}");
                 if (varNames.Contains(varName)) throw new SimplexError($"Duplicate variable name: {varName}");
-                if (IsArtificialVariable(varName)) has_artifical = true;
+                if (IsArtificialVariable(varName)) hasArtifical = true;
                 varNames.Add(varName);
             }
             Fraction[,] values = new Fraction[table.GetSize().x + 1, table.GetSize().y];
             // Initialize array entries to zero fraction to avoid default-denominator==0
-            for (int _i = 0; _i < values.GetLength(0); _i++)
+            for (int i = 0; i < values.GetLength(0); i++)
             {
-                for (int _j = 0; _j < values.GetLength(1); _j++)
+                for (int j = 0; j < values.GetLength(1); j++)
                 {
-                    values[_i, _j] = (Fraction)0;
+                    values[i, j] = (Fraction)0;
                 }
             }
             for (int x = 0; x <= table.GetSize().x; x++)
@@ -336,13 +336,13 @@ namespace NEA.math
                 {
                     string cellContent = ((SimplexTableauValueField)table[x, y]).content.Trim();
                     if (cellContent == "") cellContent = "0";
-                    if (!Fraction.TryParse(cellContent, out Fraction v)) throw new SimplexError($"Invalid fraction value at cell ({x + Const.DISPLAY_INDEX_OFFSET}, {y + Const.DISPLAY_INDEX_OFFSET}): {cellContent}");
+                    if (!Fraction.TryParse(cellContent, out Fraction v)) throw new SimplexError($"Invalid fraction value at cell ({x + Const.DisplayIndexOffset}, {y + Const.DisplayIndexOffset}): {cellContent}");
                     values[x, y - 1] = v;
                 }
             }
             return new SimplexInterationRunner(
-                has_artifical ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
-                has_artifical ? SimplexMode.MIN : SimplexMode.MAX,
+                hasArtifical ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
+                hasArtifical ? SimplexMode.MIN : SimplexMode.MAX,
                 values,
                 varNames.ToArray()
             );
@@ -352,7 +352,7 @@ namespace NEA.math
         {
             if (runner is null)
             {
-                ui.DEBUG.DebugStore.AppendLine("Runner is null, cannot run.");
+                ui.Debug.DebugStore.AppendLine("Runner is null, cannot run.");
                 return new SimplexRunnerOutput[] { };
             }
             SimplexInterationRunner current = (SimplexInterationRunner)runner;
@@ -363,18 +363,18 @@ namespace NEA.math
             };
             while (true)
             {
-                ui.DEBUG.DebugStore.AppendLine($"--- Step {idx} ---");
-                ui.DEBUG.DebugStore.AppendLine(current.ToString());
+                ui.Debug.DebugStore.AppendLine($"--- Step {idx} ---");
+                ui.Debug.DebugStore.AppendLine(current.ToString());
                 SimplexRunnerOutput output = current.Next();
-                ui.DEBUG.DebugStore.AppendLine($"State: {output.state}, Reason: {output.reason}");
-                if (!(output.next is null)) results.Add(output);
-                if (output.state != SimplexState.NOT_ENDED)
+                ui.Debug.DebugStore.AppendLine($"State: {output.State}, Reason: {output.Reason}");
+                if (!(output.Next is null)) results.Add(output);
+                if (output.State != SimplexState.NOT_ENDED)
                 {
-                    if (output.state == SimplexState.FAILED) throw new SimplexError("Simplex method failed to complete.");
-                    else if (output.state == SimplexState.ENDED) ui.DEBUG.DebugStore.AppendLine("Simplex method completed successfully.");
+                    if (output.State == SimplexState.FAILED) throw new SimplexError("Simplex method failed to complete.");
+                    else if (output.State == SimplexState.ENDED) ui.Debug.DebugStore.AppendLine("Simplex method completed successfully.");
                     break;
                 }
-                current = (SimplexInterationRunner)output.next;
+                current = (SimplexInterationRunner)output.Next;
                 idx++;
             }
             return results.ToArray();

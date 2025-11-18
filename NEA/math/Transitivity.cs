@@ -7,12 +7,12 @@ namespace NEA.Math
     {
         public static ui.math.Fraction Transitivity(this math_parser.math.Fraction src)
         {
-            return new ui.math.Fraction(src.numerator, src.denominator);
+            return new ui.math.Fraction(src.Numerator, src.Denominator);
         }
 
         public static math_parser.math.Fraction Transitivity(this ui.math.Fraction src)
         {
-            return new math_parser.math.Fraction(src.numerator, src.denominator);
+            return new math_parser.math.Fraction(src.Numerator, src.Denominator);
         }
     }
 }

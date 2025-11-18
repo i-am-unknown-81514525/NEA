@@ -10,14 +10,14 @@ namespace NEA.components
 {
     public class SimplexPagingOutputContainer : Container
     {
-        public readonly Switcher outer_switcher;
-        public readonly Switcher tableau_switcher;
-        public readonly Switcher switcher = new Switcher();
+        public readonly Switcher OuterSwitcher;
+        public readonly Switcher TableauSwitcher;
+        public readonly Switcher Switcher = new Switcher();
 
-        public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs, Switcher outer_switcher, Switcher tableau_switcher)
+        public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs, Switcher outerSwitcher, Switcher tableauSwitcher)
         {
-            this.outer_switcher = outer_switcher;
-            this.tableau_switcher = tableau_switcher;
+            this.OuterSwitcher = outerSwitcher;
+            this.TableauSwitcher = tableauSwitcher;
 
             if (outputs.Length == 0 || outputs.Length == 1)
             {
@@ -31,25 +31,25 @@ namespace NEA.components
                     (item, new Fraction(1, 1)),
                     (
                         new SimplexOutputExitContainer(
-                            (outer_switcher, 0, "Back to Menu"),
-                            (tableau_switcher, 0, "Back to Tableau")
+                            (outerSwitcher, 0, "Back to Menu"),
+                            (tableauSwitcher, 0, "Back to Tableau")
                         ),
                         1
                     )
                 });
                 return;
             }
-            switcher.Add(
+            Switcher.Add(
                 new VerticalGroupComponent()
                 {
                     (outputs[0].ToOutputContainer(), new Fraction(1, 1)),
                     (
                         new HorizontalGroupComponent() {
                             (new SimplexOutputExitContainer(
-                                (outer_switcher, 0, "Back to Menu"),
-                                (tableau_switcher, 0, "Back to Tableau")
+                                (outerSwitcher, 0, "Back to Menu"),
+                                (tableauSwitcher, 0, "Back to Tableau")
                             ), new Fraction(2, 3)),
-                            (new PageSwitcher(switcher, "Next", 1), new Fraction(1, 3))
+                            (new PageSwitcher(Switcher, "Next", 1), new Fraction(1, 3))
                         },1
                     )
                 }
@@ -57,63 +57,63 @@ namespace NEA.components
             for (int i = 1; i < outputs.Length - 1; i++)
             {
                 int idx = i;
-                switcher.Add(
+                Switcher.Add(
                     new VerticalGroupComponent()
                     {
                         (outputs[idx].ToOutputContainer(), new Fraction(1, 1)),
                         (
                             new HorizontalGroupComponent() {
-                                (new PageSwitcher(switcher, "Last", idx - 1), new Fraction(1, 4)),
+                                (new PageSwitcher(Switcher, "Last", idx - 1), new Fraction(1, 4)),
                                 (new SimplexOutputExitContainer(
-                                    (outer_switcher, 0, "Back to Menu"),
-                                    (tableau_switcher, 0, "Back to Tableau")
+                                    (outerSwitcher, 0, "Back to Menu"),
+                                    (tableauSwitcher, 0, "Back to Tableau")
                                 ), new Fraction(2, 4)),
-                                (new PageSwitcher(switcher, "Next", idx + 1), new Fraction(1, 4))
+                                (new PageSwitcher(Switcher, "Next", idx + 1), new Fraction(1, 4))
                             },1
                         )
                     }
                 );
             }
-            int last_idx = outputs.Length - 1;
-            switcher.Add(
+            int lastIdx = outputs.Length - 1;
+            Switcher.Add(
                 new VerticalGroupComponent()
                 {
-                    (outputs[last_idx].ToOutputContainer(), new Fraction(1, 1)),
+                    (outputs[lastIdx].ToOutputContainer(), new Fraction(1, 1)),
                     (
                         new HorizontalGroupComponent() {
-                            (new PageSwitcher(switcher, "Last", last_idx - 1), new Fraction(1, 3)),
+                            (new PageSwitcher(Switcher, "Last", lastIdx - 1), new Fraction(1, 3)),
                             (new SimplexOutputExitContainer(
-                                (outer_switcher, 0, "Back to Menu"),
-                                (tableau_switcher, 0, "Back to Tableau")
+                                (outerSwitcher, 0, "Back to Menu"),
+                                (tableauSwitcher, 0, "Back to Tableau")
                             ), new Fraction(2, 3)),
-                            (new PageSwitcher(switcher, "Result", last_idx + 1), new Fraction(1, 4))
+                            (new PageSwitcher(Switcher, "Result", lastIdx + 1), new Fraction(1, 4))
                         }, 1
                     )
                 }
             );
-            Logger output_logger = new Logger()
+            Logger outputLogger = new Logger()
                 .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.CYAN)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
-            switcher.Add(
+            Switcher.Add(
                 new VerticalGroupComponent()
                 {
                     (
                         new TextLabel(
-                            string.Join("\n", ((SimplexInterationRunner)outputs[last_idx].next).Resolve().Select(p=>$"{p.Key}: {p.Value}"))
+                            string.Join("\n", ((SimplexInterationRunner)outputs[lastIdx].Next).Resolve().Select(p=>$"{p.Key}: {p.Value}"))
                         ).WithVAlign<EmptyStore, TextLabel>(ui.utils.VerticalAlignment.TOP)
                         .WithHAlign<EmptyStore, TextLabel>(ui.utils.HorizontalAlignment.LEFT),
                         new Fraction(1, 1)
                     ),
-                    (output_logger, 1), 
-                    (new FileSaveBar("Export latex file:", output_logger, ToLatex(outputs)), 1),
+                    (outputLogger, 1),
+                    (new FileSaveBar("Export latex file:", outputLogger, ToLatex(outputs)), 1),
                     (
                         new HorizontalGroupComponent() {
-                            (new PageSwitcher(switcher, "Last", last_idx), new Fraction(1, 4)),
+                            (new PageSwitcher(Switcher, "Last", lastIdx), new Fraction(1, 4)),
                             (new SimplexOutputExitContainer(
-                                (outer_switcher, 0, "Back to Menu"),
-                                (tableau_switcher, 0, "Back to Tableau")
+                                (outerSwitcher, 0, "Back to Menu"),
+                                (tableauSwitcher, 0, "Back to Tableau")
                             ), new Fraction(2, 4)),
                             (new Button("Open As Latex").WithHandler((button, loc) => { DisplayLatex(ToLatex(outputs)); }), new Fraction(1, 4))
                         },1
@@ -121,12 +121,12 @@ namespace NEA.components
                 }
             );
 
-            Add(switcher);
+            Add(Switcher);
         }
 
         public static string ToLatex(SimplexRunnerOutput[] outputs)
         {
-            string base_string = @"\documentclass{{article}}
+            string baseString = @"\documentclass{{article}}
 \usepackage{{amsmath}}
 \usepackage{{mathtools}}
 \begin{{document}}
@@ -134,15 +134,15 @@ namespace NEA.components
 {0}
 \end{{document}}";
             string content = string.Join("\\\\\\\\\n", outputs.Select(output => output.AsLatex()));
-            return string.Format(base_string, content);
+            return string.Format(baseString, content);
         }
 
         public static void DisplayLatex(string latex)
         {
             string urlBase = "https://www.overleaf.com/docs?snip_uri[]=data:application/x-tex;base64,{0}&snip_name[]=main.tex";
             string encoded = Base64Encode(latex).Replace("+", "-").Replace("/", "_").Replace("=", "");
-            string fullURL = string.Format(urlBase, encoded);
-            ui.core.ConsoleHandler.ConsoleIntermediateHandler.OpenWebsite(fullURL);
+            string fullUrl = string.Format(urlBase, encoded);
+            ui.core.ConsoleHandler.ConsoleIntermediateHandler.OpenWebsite(fullUrl);
         }
 
 

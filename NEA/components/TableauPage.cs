@@ -7,53 +7,53 @@ namespace NEA.components
 {
     public class TableauPage : Container
     {
-        public readonly Switcher outer_switcher;
-        public readonly Switcher inner_switcher;
+        public readonly Switcher OuterSwitcher;
+        public readonly Switcher InnerSwitcher;
 
-        public readonly SimplexTableauInput tableau_input = new SimplexTableauInput();
+        public readonly SimplexTableauInput TableauInput = new SimplexTableauInput();
 
-        public readonly Container output_container = new Container() { new Padding() };
+        public readonly Container OutputContainer = new Container() { new Padding() };
 
-        public readonly Logger logger = new Logger().WithForeground<EmptyStore, Logger>(ForegroundColorEnum.RED);
+        public readonly Logger Logger = new Logger().WithForeground<EmptyStore, Logger>(ForegroundColorEnum.RED);
 
-        public TableauPage(Switcher outer_switcher) : base()
+        public TableauPage(Switcher outerSwitcher) : base()
         {
-            this.outer_switcher = outer_switcher;
-            inner_switcher = new Switcher() {
+            this.OuterSwitcher = outerSwitcher;
+            InnerSwitcher = new Switcher() {
                 new VerticalGroupComponent() {
-                    tableau_input,
-                    (logger, 1),
+                    TableauInput,
+                    (Logger, 1),
                     (
                         new HorizontalGroupComponent() {
-                            new PageSwitcher(outer_switcher, "Back", 0),
+                            new PageSwitcher(outerSwitcher, "Back", 0),
                             new Button("Start").WithHandler(
                                 (_)=> {
                                     try {
-                                        output_container.Set(
+                                        OutputContainer.Set(
                                             new SimplexPagingOutputContainer(
                                                 ToSimplexRunner.RunAll(
                                                     ToSimplexRunner.Translate(
-                                                        tableau_input.table
+                                                        TableauInput.Table
                                                     )
                                                 ),
-                                                outer_switcher,
-                                                inner_switcher
+                                                outerSwitcher,
+                                                InnerSwitcher
                                             )
                                         );
                                     }
                                     catch(System.Exception e){
-                                        logger.Push(e.Message);
+                                        Logger.Push(e.Message);
                                         return;
                                     }
-                                    inner_switcher.SwitchTo(1);
+                                    InnerSwitcher.SwitchTo(1);
                                 }
                             )
                         }
                     , 1)
                 },
-                output_container
+                OutputContainer
             };
-            Add(inner_switcher);
+            Add(InnerSwitcher);
         }
     }
 }

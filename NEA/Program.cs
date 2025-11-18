@@ -26,24 +26,24 @@ namespace NEA
             App app = new App(
                 switcher
             );
-            TableauPage table_page = new TableauPage(switcher);
-            ModelInputPage model_page = new ModelInputPage(switcher);
-            StructuredPage structured_page = new StructuredPage(switcher);
-            ImportPage import_page = new ImportPage(switcher);
+            TableauPage tablePage = new TableauPage(switcher);
+            ModelInputPage modelPage = new ModelInputPage(switcher);
+            StructuredPage structuredPage = new StructuredPage(switcher);
+            ImportPage importPage = new ImportPage(switcher);
             switcher.AddMulti(
                 new IComponent[] {
                     new MainMenu(switcher),
-                    model_page,
-                    table_page,
-                    structured_page,
-                    import_page         
+                    modelPage,
+                    tablePage,
+                    structuredPage,
+                    importPage
                 }
             );
             app.WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
-                Console.WriteLine(ui.DEBUG.DebugStore.ToString());
-                Console.WriteLine(table_page.tableau_input.table.AsLatex());
+                Console.WriteLine(ui.Debug.DebugStore.ToString());
+                Console.WriteLine(tablePage.TableauInput.Table.AsLatex());
             }).Run();
         }
     }

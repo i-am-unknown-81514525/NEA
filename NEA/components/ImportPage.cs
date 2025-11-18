@@ -11,44 +11,44 @@ namespace NEA.components
 {
     public class ImportPage : Container
     {
-        public readonly Switcher outer_switcher;
-        public readonly Switcher inner_switcher;
+        public readonly Switcher OuterSwitcher;
+        public readonly Switcher InnerSwitcher;
 
-        public readonly SingleLineInputField filename_input = new SingleLineInputField();
+        public readonly SingleLineInputField FilenameInput = new SingleLineInputField();
 
-        public readonly Container output_container = new Container() { new Padding() };
+        public readonly Container OutputContainer = new Container() { new Padding() };
 
-        public ImportPage(Switcher outer_switcher) : base()
+        public ImportPage(Switcher outerSwitcher) : base()
         {
-            this.outer_switcher = outer_switcher;
+            this.OuterSwitcher = outerSwitcher;
             Logger logger = new Logger()
                 .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.CYAN)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
-            inner_switcher = new Switcher() {
+            InnerSwitcher = new Switcher() {
                 new VerticalGroupComponent() {
                     new Padding(),
                     (new HorizontalGroupComponent()
                     {
                         (new TextLabel("Filename: "), 10),
-                        filename_input
+                        FilenameInput
                     }, 1),
                     (logger, 1),
                     (
                         new HorizontalGroupComponent() {
-                            new PageSwitcher(outer_switcher, "Back", 0),
+                            new PageSwitcher(outerSwitcher, "Back", 0),
                             new Button("Import").WithHandler(
                                 (_)=> {
                                     try
                                     {
-                                        output_container.Set(
+                                        OutputContainer.Set(
                                             new SimplexPagingOutputContainer(
                                                 ToSimplexRunner.RunAll(
-                                                    ImportHandler.ImportFromFile(filename_input.content)
+                                                    ImportHandler.ImportFromFile(FilenameInput.content)
                                                 ),
-                                                outer_switcher,
-                                                inner_switcher
+                                                outerSwitcher,
+                                                InnerSwitcher
                                             )
                                         );
                                     }
@@ -57,15 +57,15 @@ namespace NEA.components
                                         logger.Push(ex.Message);
                                         return;
                                     }
-                                    inner_switcher.SwitchTo(1);
+                                    InnerSwitcher.SwitchTo(1);
                                 }
                             )
                         }
                     , 1)
                 },
-                output_container
+                OutputContainer
             };
-            Add(inner_switcher);
+            Add(InnerSwitcher);
         }
     }
 }

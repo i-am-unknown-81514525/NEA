@@ -4,22 +4,22 @@ namespace NEA.components
 {
     public class SimplexTableauInput : Container
     {
-        public readonly SimplexInputTable table = new SimplexInputTable();
-        public readonly BoundedSpinner row = new BoundedSpinner("Row", 2, 2, 7);
-        public readonly BoundedSpinner column = new BoundedSpinner("Column", 2, 2, 16);
+        public readonly SimplexInputTable Table = new SimplexInputTable();
+        public readonly BoundedSpinner Row = new BoundedSpinner("Row", 2, 2, 7);
+        public readonly BoundedSpinner Column = new BoundedSpinner("Column", 2, 2, 16);
 
         public SimplexTableauInput()
         {
-            row.onChange = (value) => table.ForceResize((table.GetSize().x, value));
-            column.onChange = (value) => table.ForceResize((value, table.GetSize().y));
-            table.Resize((column.amount, row.amount));
+            Row.OnChange = (value) => Table.ForceResize((Table.GetSize().x, value));
+            Column.OnChange = (value) => Table.ForceResize((value, Table.GetSize().y));
+            Table.Resize((Column.amount, Row.amount));
             Add(
                 new VerticalGroupComponent()
                 {
-                    table,
+                    Table,
                     (new HorizontalGroupComponent() {
-                        row,
-                        column
+                        Row,
+                        Column
                     }, 1)
                 }
             );

@@ -14,49 +14,49 @@ namespace NEA.components
         public int idx { get; set; }
         public int stage { get; set; }
         public int it { get; set; }
-        public int it_idx { get; set; }
+        public int itIdx { get; set; }
     }
 
     public class SimplexOutputContainer : Container
     {
-        public SimplexState state;
-        public SimplexInterationRunner runner;
-        public SimplexOutputTable table;
+        public SimplexState State;
+        public SimplexInterationRunner Runner;
+        public SimplexOutputTable Table;
         public string reason
         {
-            get => reasonLabel.text;
+            get => ReasonLabel.text;
             set
             {
-                reasonLabel.text = value;
+                ReasonLabel.text = value;
                 SetHasUpdate();
             }
         }
-        public TextLabel reasonLabel = new TextLabel();
+        public TextLabel ReasonLabel = new TextLabel();
 
-        public readonly Logger logger = new Logger()
+        public readonly Logger Logger = new Logger()
                 .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
         public SimplexOutputContainer(SimplexState state, SimplexInterationRunner runner, string reason)
         {
-            this.state = state;
-            this.runner = runner;
-            string stage_name = "ONE";
-            if (new[] { SimplexStage.TWO_STAGE_MAX, SimplexStage.TWO_STAGE_MIN }.Contains(runner.stage))
+            this.State = state;
+            this.Runner = runner;
+            string stageName = "ONE";
+            if (new[] { SimplexStage.TWO_STAGE_MAX, SimplexStage.TWO_STAGE_MIN }.Contains(runner.Stage))
             {
-                stage_name = "TWO";
+                stageName = "TWO";
             }
-            this.reason = $"it:{runner.it+1}, Step:{(int)runner.step}, Stage:{stage_name}: {reason}";
+            this.reason = $"it:{runner.It+1}, Step:{(int)runner.Step}, Stage:{stageName}: {reason}";
             // SingleLineInputField filename_input = new SingleLineInputField();
-            logger.Push(reason);
+            Logger.Push(reason);
             Add(
                 new VerticalGroupComponent()
                 {
-                    (table = new SimplexOutputTable(runner)),
-                    (logger, 1),
+                    (Table = new SimplexOutputTable(runner)),
+                    (Logger, 1),
                     (
-                        (new FileSaveBar("Export filename: ", logger, ExportHandler.ExportToContent(runner)), 1)
+                        (new FileSaveBar("Export filename: ", Logger, ExportHandler.ExportToContent(runner)), 1)
                     )
                 }
             );
@@ -65,16 +65,16 @@ namespace NEA.components
         protected override void OnVisibleInternal()
         {
             base.OnMount();
-            logger.WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
+            Logger.WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.YELLOW)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
-            logger.Push(reason);
+            Logger.Push(reason);
         }
 
         public override string AsLatex()
         {
-            return table.AsLatex();
+            return Table.AsLatex();
         }
     }
 }

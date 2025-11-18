@@ -38,7 +38,7 @@ namespace NEA.components
 
     public class SimplexOutputTable : VirtualTable<FormattedTable>
     {
-        public SimplexInterationRunner runner;
+        public SimplexInterationRunner Runner;
 
         protected override FormattedTable InnerConstructor()
         {
@@ -47,15 +47,15 @@ namespace NEA.components
 
         public SimplexOutputTable(SimplexInterationRunner runner) : base()
         {
-            this.runner = runner;
-            inner.Resize((runner.expressions.GetLength(0), runner.expressions.GetLength(1) + 1));
-            inner.WithComponentConstructor(((int x, int y) loc) =>
+            this.Runner = runner;
+            Inner.Resize((runner.Expressions.GetLength(0), runner.Expressions.GetLength(1) + 1));
+            Inner.WithComponentConstructor(((int x, int y) loc) =>
             {
                 if (loc.y == 0)
                 {
-                    if (loc.x < runner.vars.Length)
+                    if (loc.x < runner.Vars.Length)
                     {
-                        return new VariableLabel(runner.vars[loc.x]);
+                        return new VariableLabel(runner.Vars[loc.x]);
                     }
                     else
                     {
@@ -63,28 +63,28 @@ namespace NEA.components
                     }
                 }
                 loc.y--;
-                return new FractionTableCell(runner.expressions[loc.x, loc.y]);
+                return new FractionTableCell(runner.Expressions[loc.x, loc.y]);
             });
         }
 
         public override void InsertColumn(int idx, SplitAmount amount = null)
         {
-            inner.InsertColumn(idx, amount);
+            Inner.InsertColumn(idx, amount);
         }
 
         public override void InsertRow(int idx, SplitAmount amount = null)
         {
-            inner.InsertRow(idx, amount);
+            Inner.InsertRow(idx, amount);
         }
 
         public override void RemoveColumn(int idx)
         {
-            inner.RemoveColumn(idx);
+            Inner.RemoveColumn(idx);
         }
 
         public override void RemoveRow(int idx)
         {
-            inner.RemoveRow(idx);
+            Inner.RemoveRow(idx);
         }
     }
 }

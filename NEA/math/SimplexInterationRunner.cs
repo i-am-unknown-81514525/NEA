@@ -9,40 +9,40 @@ namespace NEA.math
 {
     public struct SimplexRunnerOutput : ILatex
     {
-        public readonly SimplexState state;
-        public readonly SimplexInterationRunner next;
-        public readonly string reason;
+        public readonly SimplexState State;
+        public readonly SimplexInterationRunner Next;
+        public readonly string Reason;
 
         public SimplexRunnerOutput(SimplexState state, SimplexInterationRunner next, string reason)
         {
-            this.state = state;
-            this.next = next;
-            this.reason = reason;
+            this.State = state;
+            this.Next = next;
+            this.Reason = reason;
         }
 
         public SimplexOutputContainer ToOutputContainer()
         {
-            return new SimplexOutputContainer(state, (SimplexInterationRunner)next, reason);
+            return new SimplexOutputContainer(State, (SimplexInterationRunner)Next, Reason);
         }
 
         public string AsLatex()
         {
-            return $"\\\\\\text{{{reason.Replace("_", "\\_")}}}\\\\\n{ToOutputContainer().AsLatex()}";
+            return $"\\\\\\text{{{Reason.Replace("_", "\\_")}}}\\\\\n{ToOutputContainer().AsLatex()}";
         }
     }
     public class SimplexInterationRunner
     {
-        public SimplexStage stage;
-        public SimplexMode mode;
+        public SimplexStage Stage;
+        public SimplexMode Mode;
 
-        public SimplexStep step;
+        public SimplexStep Step;
 
-        public int it = 0;
-        public Fraction[,] expressions;
-        public string[] vars;
-        public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) meta;
+        public int It = 0;
+        public Fraction[,] Expressions;
+        public string[] Vars;
+        public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) Meta;
 
-        public SimplexInterationRunner start;
+        public SimplexInterationRunner Start;
 
         public SimplexInterationRunner(
             SimplexStage stage,
@@ -53,26 +53,26 @@ namespace NEA.math
             (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx)? meta = null,
             SimplexStep step = SimplexStep.PICK_PIVOT_COLUMN)
         {
-            this.stage = stage;
-            this.mode = mode;
-            this.step = step;
-            this.expressions = expressions.Clone() as Fraction[,];
-            this.vars = vars.Clone() as string[];
-            this.it = (start is null) ? 0 : start.it;
+            this.Stage = stage;
+            this.Mode = mode;
+            this.Step = step;
+            this.Expressions = expressions.Clone() as Fraction[,];
+            this.Vars = vars.Clone() as string[];
+            this.It = (start is null) ? 0 : start.It;
             if (meta is null)
             {
-                this.meta = (-1, -1, null, new List<int>());
+                this.Meta = (-1, -1, null, new List<int>());
             } else
             {
-                this.meta = ((int, int, Fraction[], List<int>))meta;
+                this.Meta = ((int, int, Fraction[], List<int>))meta;
             }
             if (start is null)
             {
-                this.start = this;
+                this.Start = this;
             }
             else
             {
-                this.start = start;
+                this.Start = start;
             }
         }
 
@@ -80,114 +80,114 @@ namespace NEA.math
         {
             return new SimplexInterationRunner
             (
-                stage,
-                mode,
-                (Fraction[,])expressions.Clone(),
-                (string[])vars.Clone(),
-                start,
-                (meta.pivotCol, meta.pivotRow, meta.normalised is null ? null : (Fraction[])meta.normalised.Clone(), meta.artificalIdx.ToList()),
-                step
+                Stage,
+                Mode,
+                (Fraction[,])Expressions.Clone(),
+                (string[])Vars.Clone(),
+                Start,
+                (Meta.pivotCol, Meta.pivotRow, Meta.normalised is null ? null : (Fraction[])Meta.normalised.Clone(), Meta.artificalIdx.ToList()),
+                Step
             );
         }
 
         public SimplexRunnerOutput Next()
         {
-            SimplexInterationRunner new_runner = Clone();
-            switch (step)
+            SimplexInterationRunner newRunner = Clone();
+            switch (Step)
             {
                 case SimplexStep.PICK_PIVOT_COLUMN:
                     {
-                        int? result = GetColIdxByMode(mode);
-                        string pos = mode == SimplexMode.MAX ? "negative" : "positive";
+                        int? result = GetColIdxByMode(Mode);
+                        string pos = Mode == SimplexMode.MAX ? "negative" : "positive";
                         if (result is null)
                         {
-                            if (isCompleted())
+                            if (IsCompleted())
                                 return new SimplexRunnerOutput(SimplexState.ENDED, this, $"There are no {pos} (unoptimal) column in objective function, and therefore a solution is found");
                             else
                                 return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Contradictory result: No pivot column can be found but the solution isn't complete");
                         }
-                        new_runner.step = SimplexStep.PICK_PIVOT_ROW;
-                        new_runner.meta.pivotCol = (int)result;
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Picked pivot column with index of: {result + Const.DISPLAY_INDEX_OFFSET} as this is not optimal solution");
+                        newRunner.Step = SimplexStep.PICK_PIVOT_ROW;
+                        newRunner.Meta.pivotCol = (int)result;
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, $"Picked pivot column with index of: {result + Const.DisplayIndexOffset} as this is not optimal solution");
                     }
                 case SimplexStep.PICK_PIVOT_ROW:
                     {
-                        int? result = GetRowIdxByMode(meta.pivotCol, mode);
+                        int? result = GetRowIdxByMode(Meta.pivotCol, Mode);
                         if (result is null)
                         {
-                            return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Cannot select a pivot row where RHS/col > 0 with pivot column with index: {meta.pivotCol + Const.DISPLAY_INDEX_OFFSET}");
+                            return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Cannot select a pivot row where RHS/col > 0 with pivot column with index: {Meta.pivotCol + Const.DisplayIndexOffset}");
                         }
-                        new_runner.step = SimplexStep.NORMALISE_ROW;
-                        new_runner.meta.pivotRow = (int)result;
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Picked pivot row with index of: {result + Const.DISPLAY_INDEX_OFFSET}");
+                        newRunner.Step = SimplexStep.NORMALISE_ROW;
+                        newRunner.Meta.pivotRow = (int)result;
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, $"Picked pivot row with index of: {result + Const.DisplayIndexOffset}");
                     }
                 case SimplexStep.NORMALISE_ROW:
                     {
-                        Fraction value = expressions[meta.pivotCol, meta.pivotRow];
-                        Fraction[] normalised = new Fraction[expressions.GetLength(0)];
-                        for (int x = 0; x < expressions.GetLength(0); x++)
+                        Fraction value = Expressions[Meta.pivotCol, Meta.pivotRow];
+                        Fraction[] normalised = new Fraction[Expressions.GetLength(0)];
+                        for (int x = 0; x < Expressions.GetLength(0); x++)
                         {
-                            if (Const.SIMPLEX_NORMALISE_INPACE_MOD)
-                                new_runner.expressions[x, meta.pivotRow] = expressions[x, meta.pivotRow] / value;
-                            normalised[x] = expressions[x, meta.pivotRow] / value;
+                            if (Const.SimplexNormaliseInpaceMod)
+                                newRunner.Expressions[x, Meta.pivotRow] = Expressions[x, Meta.pivotRow] / value;
+                            normalised[x] = Expressions[x, Meta.pivotRow] / value;
                         }
-                        new_runner.step = SimplexStep.APPLY_OTHER;
-                        new_runner.meta.normalised = normalised;
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, $"Normalise pivot row {meta.pivotRow} by multiply the row with {1 / value}");
+                        newRunner.Step = SimplexStep.APPLY_OTHER;
+                        newRunner.Meta.normalised = normalised;
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, $"Normalise pivot row {Meta.pivotRow} by multiply the row with {1 / value}");
                     }
                 case SimplexStep.APPLY_OTHER:
                     {
-                        if (!Const.SIMPLEX_NORMALISE_INPACE_MOD)
+                        if (!Const.SimplexNormaliseInpaceMod)
                         {
 #pragma warning disable CS0162
-                            for (int x = 0; x < expressions.GetLength(0); x++)
+                            for (int x = 0; x < Expressions.GetLength(0); x++)
                             {
-                                new_runner.expressions[x, meta.pivotRow] = meta.normalised[x];
+                                newRunner.Expressions[x, Meta.pivotRow] = Meta.normalised[x];
                             }
 #pragma warning restore CS0162
                         }
-                        for (int y = 0; y < expressions.GetLength(1); y++)
+                        for (int y = 0; y < Expressions.GetLength(1); y++)
                         {
-                            if (y == meta.pivotRow) continue;
-                            Fraction value = -expressions[meta.pivotCol, y];
-                            for (int x = 0; x < expressions.GetLength(0); x++)
+                            if (y == Meta.pivotRow) continue;
+                            Fraction value = -Expressions[Meta.pivotCol, y];
+                            for (int x = 0; x < Expressions.GetLength(0); x++)
                             {
-                                new_runner.expressions[x, y] = expressions[x, y] + value * meta.normalised[x];
+                                newRunner.Expressions[x, y] = Expressions[x, y] + value * Meta.normalised[x];
                             }
                         }
-                        if (stage == SimplexStage.TWO_STAGE_MIN || stage == SimplexStage.TWO_STAGE_MAX)
+                        if (Stage == SimplexStage.TWO_STAGE_MIN || Stage == SimplexStage.TWO_STAGE_MAX)
                         {
-                            new_runner.step = SimplexStep.CHECK_ARTIFICAL;
+                            newRunner.Step = SimplexStep.CHECK_ARTIFICAL;
                         }
                         else
                         {
-                            new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
-                            new_runner.meta = (-1, -1, null, new List<int>());
-                            new_runner.start = new_runner;
-                            new_runner.it += 1;
+                            newRunner.Step = SimplexStep.PICK_PIVOT_COLUMN;
+                            newRunner.Meta = (-1, -1, null, new List<int>());
+                            newRunner.Start = newRunner;
+                            newRunner.It += 1;
                         }
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, "For each non-pivot row, put the new row as old_row + (-pivot_value)*pivot_row");
                     }
                 case SimplexStep.CHECK_ARTIFICAL:
                     {
                         bool isCompleted = true;
                         List<int> artificalIdx = new List<int>();
-                        for (int x = 0; x < expressions.GetLength(0) - 1; x++)
+                        for (int x = 0; x < Expressions.GetLength(0) - 1; x++)
                         {
-                            string var_name = vars[x];
-                            Fraction curr_value = expressions[x, 0];
-                            if (var_name == "A")
+                            string varName = Vars[x];
+                            Fraction currValue = Expressions[x, 0];
+                            if (varName == "A")
                             {
                                 artificalIdx.Add(x);
-                                if (curr_value != 1)
+                                if (currValue != 1)
                                 {
                                     return new SimplexRunnerOutput(SimplexState.FAILED, null, "Var A on row 0 isn't 1");
                                 }
                             }
-                            else if (var_name.StartsWith("a_") && var_name.Length > 2 && int.TryParse(var_name.Substring(2), out _))
+                            else if (varName.StartsWith("a_") && varName.Length > 2 && int.TryParse(varName.Substring(2), out _))
                             {
                                 artificalIdx.Add(x);
-                                if (curr_value != -1)
+                                if (currValue != -1)
                                 {
                                     isCompleted = false;
                                     break;
@@ -195,7 +195,7 @@ namespace NEA.math
                             }
                             else
                             {
-                                if (curr_value != 0)
+                                if (currValue != 0)
                                 {
                                     isCompleted = false;
                                     break;
@@ -205,42 +205,42 @@ namespace NEA.math
                         string reason;
                         if (isCompleted)
                         {
-                            new_runner.step = SimplexStep.REMOVE_ARTIFICAL;
+                            newRunner.Step = SimplexStep.REMOVE_ARTIFICAL;
                             reason = "A = 0 => The tableau can transition to Stage 2 Simplex";
                         }
                         else
                         {
-                            new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
+                            newRunner.Step = SimplexStep.PICK_PIVOT_COLUMN;
                             reason = "A != 0";
-                            new_runner.meta = (-1, -1, null, new List<int>());
-                            new_runner.start = new_runner;
-                            new_runner.it += 1;
+                            newRunner.Meta = (-1, -1, null, new List<int>());
+                            newRunner.Start = newRunner;
+                            newRunner.It += 1;
                         }
-                        new_runner.meta.artificalIdx = artificalIdx;
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, reason);
+                        newRunner.Meta.artificalIdx = artificalIdx;
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, reason);
                     }
                 case SimplexStep.REMOVE_ARTIFICAL:
                     {
-                        var artificalIdx = new_runner.meta.artificalIdx;
-                        int[] notArtifical = Enumerable.Range(0, expressions.GetLength(0)).Where(idx => !artificalIdx.Contains(idx)).ToArray();
-                        Fraction[,] notArtificalExpr = new Fraction[notArtifical.Length, expressions.GetLength(1) - 1];
+                        var artificalIdx = newRunner.Meta.artificalIdx;
+                        int[] notArtifical = Enumerable.Range(0, Expressions.GetLength(0)).Where(idx => !artificalIdx.Contains(idx)).ToArray();
+                        Fraction[,] notArtificalExpr = new Fraction[notArtifical.Length, Expressions.GetLength(1) - 1];
                         for (int x = 0; x < notArtifical.Length; x++)
                         {
-                            for (int y = 0; y < expressions.GetLength(1) - 1; y++)
+                            for (int y = 0; y < Expressions.GetLength(1) - 1; y++)
                             {
-                                notArtificalExpr[x, y] = expressions[notArtifical[x], y + 1];
+                                notArtificalExpr[x, y] = Expressions[notArtifical[x], y + 1];
                             }
                         }
-                        var vars = this.vars;
-                        new_runner.vars = notArtifical.Take(notArtifical.Length - 1).Select(idx => vars[idx]).ToArray(); // Exclude the last one which is RHS
-                        new_runner.stage = SimplexStage.ONE_STAGE;
-                        new_runner.expressions = notArtificalExpr;
-                        new_runner.mode = stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
-                        new_runner.step = SimplexStep.PICK_PIVOT_COLUMN;
-                        new_runner.start = new_runner;
-                            new_runner.it += 1;
-                        new_runner.meta = (-1, -1, null, new List<int>());
-                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, new_runner, "Remove artifical variables");
+                        var vars = this.Vars;
+                        newRunner.Vars = notArtifical.Take(notArtifical.Length - 1).Select(idx => vars[idx]).ToArray(); // Exclude the last one which is RHS
+                        newRunner.Stage = SimplexStage.ONE_STAGE;
+                        newRunner.Expressions = notArtificalExpr;
+                        newRunner.Mode = Stage == SimplexStage.TWO_STAGE_MIN ? SimplexMode.MIN : SimplexMode.MAX;
+                        newRunner.Step = SimplexStep.PICK_PIVOT_COLUMN;
+                        newRunner.Start = newRunner;
+                            newRunner.It += 1;
+                        newRunner.Meta = (-1, -1, null, new List<int>());
+                        return new SimplexRunnerOutput(SimplexState.NOT_ENDED, newRunner, "Remove artifical variables");
                     }
                 default:
                     {
@@ -251,12 +251,12 @@ namespace NEA.math
 
         private int? GetColIdxByMode(SimplexMode mode)
         {
-            var expressions = this.expressions;
+            var expressions = this.Expressions;
             var selection = Enumerable.Range(1, expressions.GetLength(0) - 2)
                 .Select(x => (x, expressions[x, 0]))
                 .Select(((int i, Fraction frac) item) => mode == SimplexMode.MAX ? item : (item.i, -item.frac))
                 .Where(item => item.Item2 < 0)
-                .OrderBy(idx_frac => idx_frac.Item2)
+                .OrderBy(idxFrac => idxFrac.Item2)
                 .ToArray();
             if (selection.Length == 0)
             {
@@ -267,31 +267,31 @@ namespace NEA.math
 
         private int? GetRowIdxByMode(int col, SimplexMode mode)
         {
-            var expressions = this.expressions;
+            var expressions = this.Expressions;
             var selections = Enumerable.Range(1, expressions.GetLength(1) - 1)
                 .Select(y => (y, expressions[col, y]))
                 // .Select(item => mode == SimplexMode.MAX ? item : (item.y, -item.Item2))
                 .Where(item => item.Item2 > 0 && expressions[expressions.GetLength(0) - 1, item.y] / item.Item2 > 0)
                 .Select(item => (item.y, expressions[expressions.GetLength(0) - 1, item.y] / item.Item2))
-                .OrderBy(idx_frac => idx_frac.Item2)
+                .OrderBy(idxFrac => idxFrac.Item2)
                 .ToArray();
             if (selections.Length == 0)
                 return null;
             return selections[0].y;
         }
 
-        private bool isCompleted()
+        private bool IsCompleted()
         {
-            var expressions = this.expressions;
-            var mode = this.mode;
-            return vars[0] == "P" && Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, 0]).All(value => mode == SimplexMode.MAX ? value >= 0 : value <= 0);
+            var expressions = this.Expressions;
+            var mode = this.Mode;
+            return Vars[0] == "P" && Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, 0]).All(value => mode == SimplexMode.MAX ? value >= 0 : value <= 0);
         }
 
         public Dictionary<string, Fraction> Resolve()
         {
             Dictionary<string, Fraction> resolved = new Dictionary<string, Fraction>();
-            var expressions = this.expressions;
-            if (!isCompleted())
+            var expressions = this.Expressions;
+            if (!IsCompleted())
             {
                 throw new InvalidOperationException();
             }
@@ -309,7 +309,7 @@ namespace NEA.math
                         continue;
                     }
                     selectedRowIdx.Add(idx);
-                    resolved[vars[x]] = expressions[expressions.GetLength(0) - 1, idx];
+                    resolved[Vars[x]] = expressions[expressions.GetLength(0) - 1, idx];
                 }
             }
             return resolved;
@@ -317,12 +317,12 @@ namespace NEA.math
 
         public override string ToString()
         {
-            var expressions = this.expressions;
-            string expr_str = Enumerable.Range(0, expressions.GetLength(1))
+            var expressions = this.Expressions;
+            string exprStr = Enumerable.Range(0, expressions.GetLength(1))
                 .Select(y => string.Join(" & ", Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, y].AsLatex())))
                 .Select(row => $"{{ {row} }}")
                 .Aggregate((a, b) => a + " \\\\\n" + b);
-            return $"Stage: {stage}\nMode: {mode}\nStep: {step}\nVars: [{string.Join(", ", vars)}]\nExpressions:\n{expr_str}\nMeta: (pivotCol: {meta.pivotCol}, pivotRow: {meta.pivotRow}, normalised: [{(meta.normalised is null ? "" : string.Join(", ", meta.normalised))}], artificalIdx: [{string.Join(", ", meta.artificalIdx)}])";
+            return $"Stage: {Stage}\nMode: {Mode}\nStep: {Step}\nVars: [{string.Join(", ", Vars)}]\nExpressions:\n{exprStr}\nMeta: (pivotCol: {Meta.pivotCol}, pivotRow: {Meta.pivotRow}, normalised: [{(Meta.normalised is null ? "" : string.Join(", ", Meta.normalised))}], artificalIdx: [{string.Join(", ", Meta.artificalIdx)}])";
         }
     }
 }

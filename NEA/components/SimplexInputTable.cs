@@ -8,7 +8,7 @@ namespace NEA.components
     {
         public override (int x, int y) GetSize()
         {
-            return (inner.GetSize().x - 1, inner.GetSize().y - 1);
+            return (Inner.GetSize().x - 1, Inner.GetSize().y - 1);
         }
 
         protected override FormattedTable InnerConstructor()
@@ -37,37 +37,37 @@ namespace NEA.components
 
         public override void AddColumn(SplitAmount amount = null)
         {
-            int idx = inner.GetSize().x - 1;
-            inner.InsertColumn(idx, amount);
-            for (int y = 0; y < inner.GetSize().y; y++)
+            int idx = Inner.GetSize().x - 1;
+            Inner.InsertColumn(idx, amount);
+            for (int y = 0; y < Inner.GetSize().y; y++)
             {
                 if (y == 0)
-                    inner[idx, y] = new SimplexTableauVariableField();
+                    Inner[idx, y] = new SimplexTableauVariableField();
                 else
-                    inner[idx, y] = new SimplexTableauValueField();
+                    Inner[idx, y] = new SimplexTableauValueField();
             }
         }
 
         public override void AddRow(SplitAmount amount = null)
         {
-            int idx = inner.GetSize().y;
-            inner.AddRow(amount);
-            for (int x = 0; x < inner.GetSize().x; x++)
+            int idx = Inner.GetSize().y;
+            Inner.AddRow(amount);
+            for (int x = 0; x < Inner.GetSize().x; x++)
             {
-                inner[x, idx] = new SimplexTableauValueField();
+                Inner[x, idx] = new SimplexTableauValueField();
             }
         }
 
         public override void RemoveColumn(int idx)
         {
-            idx = inner.GetSize().x - 2;
-            inner.RemoveColumn(idx);
+            idx = Inner.GetSize().x - 2;
+            Inner.RemoveColumn(idx);
         }
 
         public override void RemoveRow(int idx)
         {
-            idx = inner.GetSize().y - 1;
-            inner.RemoveRow(idx);
+            idx = Inner.GetSize().y - 1;
+            Inner.RemoveRow(idx);
         }
     }
 }

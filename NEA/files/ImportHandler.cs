@@ -48,7 +48,7 @@ namespace NEA.files
             {
                 throw new ImportFormatException("Invalid format: Last variable name must be 'RHS'.");
             }
-            bool is_two_stage = row0[0] == "A";
+            bool isTwoStage = row0[0] == "A";
             if (row0.Length != new HashSet<string>(row0).Count)
             {
                 throw new ImportFormatException("Invalid format: Variable names must be unique.");
@@ -72,8 +72,8 @@ namespace NEA.files
                 }
             }
             return new SimplexInterationRunner(
-                is_two_stage ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
-                is_two_stage ? SimplexMode.MIN : SimplexMode.MAX,
+                isTwoStage ? SimplexStage.TWO_STAGE_MAX : SimplexStage.ONE_STAGE,
+                isTwoStage ? SimplexMode.MIN : SimplexMode.MAX,
                 expressions,
                 vars
             );
