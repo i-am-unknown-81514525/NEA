@@ -85,14 +85,14 @@ namespace NEA.components
             }
             else if (loc.x == table.GetSize().x - 1)
             {
-                return new SimplexTableauVariableField();
+                return new SimplexTableauValueField();
             }
             //  2          0      1     2     3
             //  (MAX|"") [field] [var] ([+] [field] [var]))* (button|"") (RHS_value|"") // Show MAX on top and not the rhs value input and not the comparsion sign
             switch (Mod(loc.x - 1, 3))
             {
                 case 0:
-                    return new SimplexTableauVariableField();
+                    return new SimplexTableauValueField();
                 case 1:
                     int idx = (loc.x - 5) / 3 + Const.DISPLAY_INDEX_OFFSET;
                     return new TextLabel($"x_{idx}");
