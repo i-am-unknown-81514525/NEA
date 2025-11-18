@@ -10,7 +10,7 @@ namespace NEA.components
         public readonly Switcher outer_switcher;
         public readonly Switcher inner_switcher;
 
-        public readonly MultiLineInputField model_input = new MultiLineInputField();
+        public readonly MultiLineInputField model_input = new MultiLineInputField("MAX ...\nST\n    ...\nEND");
 
         public readonly Container output_container = new Container() { new Padding() };
 
