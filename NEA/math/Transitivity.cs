@@ -1,16 +1,15 @@
-using ui;
-using math_parser;
+using ui.math;
 
 namespace NEA.Math
 {
     public static class TransitivityExt
     {
-        public static ui.math.Fraction Transitivity(this math_parser.math.Fraction src)
+        public static Fraction Transitivity(this math_parser.math.Fraction src)
         {
-            return new ui.math.Fraction(src.Numerator, src.Denominator);
+            return new Fraction(src.Numerator, src.Denominator);
         }
 
-        public static math_parser.math.Fraction Transitivity(this ui.math.Fraction src)
+        public static math_parser.math.Fraction Transitivity(this Fraction src)
         {
             return new math_parser.math.Fraction(src.Numerator, src.Denominator);
         }

@@ -1,10 +1,13 @@
-using ui.components;
-using NEA.math;
-using ui.components.chainExt;
-using ui.math;
+using System;
 using System.Linq;
-using ui.utils;
+using System.Text;
+using NEA.math;
+using ui.components;
+using ui.components.chainExt;
+using ui.core;
 using ui.fmt;
+using ui.math;
+using ui.utils;
 
 namespace NEA.components
 {
@@ -26,7 +29,7 @@ namespace NEA.components
                 {
                     item = outputs[0].ToOutputContainer();
                 }
-                Add(new VerticalGroupComponent()
+                Add(new VerticalGroupComponent
                 {
                     (item, new Fraction(1, 1)),
                     (
@@ -40,11 +43,11 @@ namespace NEA.components
                 return;
             }
             Switcher.Add(
-                new VerticalGroupComponent()
+                new VerticalGroupComponent
                 {
                     (outputs[0].ToOutputContainer(), new Fraction(1, 1)),
                     (
-                        new HorizontalGroupComponent() {
+                        new HorizontalGroupComponent {
                             (new SimplexOutputExitContainer(
                                 (outerSwitcher, 0, "Back to Menu"),
                                 (tableauSwitcher, 0, "Back to Tableau")
@@ -58,11 +61,11 @@ namespace NEA.components
             {
                 int idx = i;
                 Switcher.Add(
-                    new VerticalGroupComponent()
+                    new VerticalGroupComponent
                     {
                         (outputs[idx].ToOutputContainer(), new Fraction(1, 1)),
                         (
-                            new HorizontalGroupComponent() {
+                            new HorizontalGroupComponent {
                                 (new PageSwitcher(Switcher, "Last", idx - 1), new Fraction(1, 4)),
                                 (new SimplexOutputExitContainer(
                                     (outerSwitcher, 0, "Back to Menu"),
@@ -76,11 +79,11 @@ namespace NEA.components
             }
             int lastIdx = outputs.Length - 1;
             Switcher.Add(
-                new VerticalGroupComponent()
+                new VerticalGroupComponent
                 {
                     (outputs[lastIdx].ToOutputContainer(), new Fraction(1, 1)),
                     (
-                        new HorizontalGroupComponent() {
+                        new HorizontalGroupComponent {
                             (new PageSwitcher(Switcher, "Last", lastIdx - 1), new Fraction(1, 3)),
                             (new SimplexOutputExitContainer(
                                 (outerSwitcher, 0, "Back to Menu"),
@@ -97,7 +100,7 @@ namespace NEA.components
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.CYAN)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
             Switcher.Add(
-                new VerticalGroupComponent()
+                new VerticalGroupComponent
                 {
                     (
                         new TextLabel(
@@ -109,7 +112,7 @@ namespace NEA.components
                     (outputLogger, 1),
                     (new FileSaveBar("Export latex file:", outputLogger, ToLatex(outputs)), 1),
                     (
-                        new HorizontalGroupComponent() {
+                        new HorizontalGroupComponent {
                             (new PageSwitcher(Switcher, "Last", lastIdx), new Fraction(1, 4)),
                             (new SimplexOutputExitContainer(
                                 (outerSwitcher, 0, "Back to Menu"),
@@ -142,15 +145,15 @@ namespace NEA.components
             string urlBase = "https://www.overleaf.com/docs?snip_uri[]=data:application/x-tex;base64,{0}&snip_name[]=main.tex";
             string encoded = Base64Encode(latex).Replace("+", "-").Replace("/", "_").Replace("=", "");
             string fullUrl = string.Format(urlBase, encoded);
-            ui.core.ConsoleHandler.ConsoleIntermediateHandler.OpenWebsite(fullUrl);
+            ConsoleHandler.ConsoleIntermediateHandler.OpenWebsite(fullUrl);
         }
 
 
         // https://stackoverflow.com/a/11743162 CC-BY-SA 4.0 10/11/2025
         public static string Base64Encode(string plainText) 
         {
-            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
         
     }

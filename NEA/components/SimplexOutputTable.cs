@@ -1,8 +1,8 @@
+using NEA.math;
 using ui.components;
 using ui.components.chainExt;
-using ui.utils;
-using NEA.math;
 using ui.math;
+using ui.utils;
 
 namespace NEA.components
 {
@@ -45,7 +45,7 @@ namespace NEA.components
             return new FormattedTable((1, 1));
         }
 
-        public SimplexOutputTable(SimplexInterationRunner runner) : base()
+        public SimplexOutputTable(SimplexInterationRunner runner)
         {
             Runner = runner;
             Inner.Resize((runner.Expressions.GetLength(0), runner.Expressions.GetLength(1) + 1));
@@ -57,10 +57,8 @@ namespace NEA.components
                     {
                         return new VariableLabel(runner.Vars[loc.x]);
                     }
-                    else
-                    {
-                        return new VariableLabel("RHS");
-                    }
+
+                    return new VariableLabel("RHS");
                 }
                 loc.y--;
                 return new FractionTableCell(runner.Expressions[loc.x, loc.y]);

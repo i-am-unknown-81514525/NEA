@@ -1,6 +1,6 @@
 namespace NEA.math
 {
-    public enum SimplexStep : int
+    public enum SimplexStep
     {
         PICK_PIVOT_COLUMN = 1,
         PICK_PIVOT_ROW = 2,

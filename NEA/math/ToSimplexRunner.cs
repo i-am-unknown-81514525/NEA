@@ -1,12 +1,12 @@
-using NEA.components;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using ui.math;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using math_parser.tokenizer;
-using math_parser.atom;
-using System.Linq;
+using NEA.components;
 using NEA.Math;
+using ui;
+using ui.math;
+using ComparsionSymbolAtom = math_parser.atom.ComparsionSymbolAtom;
 
 // ^[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]+)?$
 
@@ -145,52 +145,52 @@ namespace NEA.math
                         }
                     }
                 }
-                if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Eq)
+                if (eq.ComparsionAtom == ComparsionSymbolAtom.Eq)
                 {
                     if (lhsLiteral > 0) // 1 + 3x = 0 -> -1 - 3x = 0 -> -3x = 1 -> - 3x <= 1 (no a), -3x >= 1 (with a)
                     {
-                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, ComparsionSymbolAtom.Le)));
                         usedSlack++;
-                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, ComparsionSymbolAtom.Ge)));
                         usedArtifical++;
                         usedSlack++;
                     }
                     else
                     { // -1 + 3x = 0 -> 3x = 1 -> 3x <= 1 (no a), 3x >= 1 (with a)
                       // 0 + 3x = 0 -> 3x = 0 -> 3x <= 0 (no a), 3x >= 0 (with a)
-                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, ComparsionSymbolAtom.Le)));
                         usedSlack++;
-                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, ComparsionSymbolAtom.Ge)));
                         usedArtifical++;
                         usedSlack++;
                     }
                 }
-                else if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Le)
+                else if (eq.ComparsionAtom == ComparsionSymbolAtom.Le)
                 {
                     if (lhsLiteral > 0) // 1 + 3x <= 0 -> -1 - 3x >= 0 3x >= 1 (with a)
                     {
-                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(-eq.Exprs, ComparsionSymbolAtom.Ge)));
                         usedArtifical++;
                         usedSlack++;
                     }
                     else
                     { // -1 + 3x <= 0 -> 3x <= 1
                       // 0 + 3x <= 0 -> 3x <= 0
-                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(eq.Exprs, ComparsionSymbolAtom.Le)));
                         usedSlack++;
                     }
                 }
-                else if (eq.ComparsionAtom == math_parser.atom.ComparsionSymbolAtom.Ge)
+                else if (eq.ComparsionAtom == ComparsionSymbolAtom.Ge)
                 {
                     if (lhsLiteral >= 0) // 1 + 3x >= 0 -> -1 - 3x <= 0 -> -3x <= 1 (no a)
                     // 0 + 3x >= 0 -> -3x <= 0 (no a)
                     {
-                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Le)));
+                        constructMeta.Add(new Meta(null, usedSlack, new EqResult(-eq.Exprs, ComparsionSymbolAtom.Le)));
                         usedSlack++;
                     }
                     else
                     { // -1 + 3x >= 0 -> 3x >= 1 (with a)
-                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, math_parser.atom.ComparsionSymbolAtom.Ge)));
+                        constructMeta.Add(new Meta(usedArtifical, usedSlack, new EqResult(eq.Exprs, ComparsionSymbolAtom.Ge)));
                         usedArtifical++;
                         usedSlack++;
                     }
@@ -352,7 +352,7 @@ namespace NEA.math
         {
             if (runner is null)
             {
-                ui.Debug.DebugStore.AppendLine("Runner is null, cannot run.");
+                Debug.DebugStore.AppendLine("Runner is null, cannot run.");
                 return new SimplexRunnerOutput[] { };
             }
             SimplexInterationRunner current = runner;
@@ -363,15 +363,15 @@ namespace NEA.math
             };
             while (true)
             {
-                ui.Debug.DebugStore.AppendLine($"--- Step {idx} ---");
-                ui.Debug.DebugStore.AppendLine(current.ToString());
+                Debug.DebugStore.AppendLine($"--- Step {idx} ---");
+                Debug.DebugStore.AppendLine(current.ToString());
                 SimplexRunnerOutput output = current.Next();
-                ui.Debug.DebugStore.AppendLine($"State: {output.State}, Reason: {output.Reason}");
+                Debug.DebugStore.AppendLine($"State: {output.State}, Reason: {output.Reason}");
                 if (!(output.Next is null)) results.Add(output);
                 if (output.State != SimplexState.NOT_ENDED)
                 {
                     if (output.State == SimplexState.FAILED) throw new SimplexError("Simplex method failed to complete.");
-                    else if (output.State == SimplexState.ENDED) ui.Debug.DebugStore.AppendLine("Simplex method completed successfully.");
+                    if (output.State == SimplexState.ENDED) Debug.DebugStore.AppendLine("Simplex method completed successfully.");
                     break;
                 }
                 current = output.Next;

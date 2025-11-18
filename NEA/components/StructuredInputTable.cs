@@ -1,19 +1,20 @@
-using ui.components.chainExt;
-using ui.components;
-using ui.utils;
-using math_parser.atom;
+using System;
 using System.Collections.Generic;
-using math_parser.tokenizer;
 using math_parser.math;
+using math_parser.tokenizer;
+using ui.components;
+using ui.components.chainExt;
 using ui.fmt;
+using ui.utils;
+using ComparsionSymbolAtom = math_parser.atom.ComparsionSymbolAtom;
 
 namespace NEA.components
 {
     public class ComparsionStateStore : ComponentStore
     {
-        public math_parser.atom.ComparsionSymbolAtom Atom;
+        public ComparsionSymbolAtom Atom;
 
-        public ComparsionStateStore(math_parser.atom.ComparsionSymbolAtom atom) : base()
+        public ComparsionStateStore(ComparsionSymbolAtom atom)
         {
             Atom = atom;
         }
@@ -26,18 +27,18 @@ namespace NEA.components
             return new ComparsionStateStore(null);
         }
 
-        public ComparisionStateButton(math_parser.atom.ComparsionSymbolAtom symbol = null) : base()
+        public ComparisionStateButton(ComparsionSymbolAtom symbol = null)
         {
-            Store.Atom = symbol ?? math_parser.atom.ComparsionSymbolAtom.Le;
+            Store.Atom = symbol ?? ComparsionSymbolAtom.Le;
             text = Store.Atom.Literal;
             OnClickHandler = (btn, loc) =>
             {
                 btn.Store.Atom = (
-                    new Dictionary<math_parser.atom.ComparsionSymbolAtom, math_parser.atom.ComparsionSymbolAtom>()
+                    new Dictionary<ComparsionSymbolAtom, ComparsionSymbolAtom>
                     {
-                        { math_parser.atom.ComparsionSymbolAtom.Le, math_parser.atom.ComparsionSymbolAtom.Ge },
-                        { math_parser.atom.ComparsionSymbolAtom.Ge, math_parser.atom.ComparsionSymbolAtom.Eq },
-                        { math_parser.atom.ComparsionSymbolAtom.Eq, math_parser.atom.ComparsionSymbolAtom.Le },
+                        { ComparsionSymbolAtom.Le, ComparsionSymbolAtom.Ge },
+                        { ComparsionSymbolAtom.Ge, ComparsionSymbolAtom.Eq },
+                        { ComparsionSymbolAtom.Eq, ComparsionSymbolAtom.Le },
                     }
                 )[btn.Store.Atom];
                 text = btn.Store.Atom.Literal;
@@ -69,11 +70,13 @@ namespace NEA.components
                 {
                     return new TextLabel("MAX ");
                 }
-                else if (loc.x == table.GetSize().x - 2)
+
+                if (loc.x == table.GetSize().x - 2)
                 {
                     return new TextLabel("");
                 }
-                else if (loc.x == table.GetSize().x - 1)
+
+                if (loc.x == table.GetSize().x - 1)
                 {
                     return new TextLabel("");
                 }
@@ -83,7 +86,8 @@ namespace NEA.components
             {
                 return new ComparisionStateButton();
             }
-            else if (loc.x == table.GetSize().x - 1)
+
+            if (loc.x == table.GetSize().x - 1)
             {
                 return new SimplexTableauValueField();
             }
@@ -99,7 +103,7 @@ namespace NEA.components
                 case 2:
                     return new TextLabel("+");
                 default:
-                    throw new System.Exception("Unreachable code reached in StructuredInputTable.ComponentAt");
+                    throw new Exception("Unreachable code reached in StructuredInputTable.ComponentAt");
             }
             // if (loc.x == 1 || loc.x - 4 % 3 == 0)
             // {
@@ -139,16 +143,14 @@ namespace NEA.components
             return table;
         }
 
-        public StructuredInputTable() : base() { }
-
         public override void InsertRow(int idx, SplitAmount amount = null)
         {
-            throw new System.InvalidOperationException();
+            throw new InvalidOperationException();
         }
 
         public override void InsertColumn(int idx, SplitAmount amount = null)
         {
-            throw new System.InvalidOperationException();
+            throw new InvalidOperationException();
         }
 
         public override void AddColumn(SplitAmount amount = null)
@@ -215,7 +217,7 @@ namespace NEA.components
                 expressions.Add(new EqResult(expr, compButton.Store.Atom));
             }
             if (comparsion == null)
-                throw new System.Exception("Unreachable code reached in StructuredInputTable.Extract");
+                throw new Exception("Unreachable code reached in StructuredInputTable.Extract");
             return (comparsion, expressions.ToArray());
         }
     }

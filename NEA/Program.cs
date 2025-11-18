@@ -1,14 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NEA.components;
 using ui;
-using ui.core;
-using ui.test;
 using ui.components;
 using ui.components.chainExt;
-using NEA.components;
 
 namespace NEA
 {
@@ -39,7 +33,7 @@ namespace NEA
                     importPage
                 }
             );
-            app.WithExitHandler<EmptyStore, App>((appObj) =>
+            app.WithExitHandler<EmptyStore, App>(appObj =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
                 Console.WriteLine(Debug.DebugStore.ToString());

@@ -10,14 +10,14 @@ namespace NEA.components
 
         public SimplexTableauInput()
         {
-            Row.OnChange = (value) => Table.ForceResize((Table.GetSize().x, value));
-            Column.OnChange = (value) => Table.ForceResize((value, Table.GetSize().y));
+            Row.OnChange = value => Table.ForceResize((Table.GetSize().x, value));
+            Column.OnChange = value => Table.ForceResize((value, Table.GetSize().y));
             Table.Resize((Column.amount, Row.amount));
             Add(
-                new VerticalGroupComponent()
+                new VerticalGroupComponent
                 {
                     Table,
-                    (new HorizontalGroupComponent() {
+                    (new HorizontalGroupComponent {
                         Row,
                         Column
                     }, 1)

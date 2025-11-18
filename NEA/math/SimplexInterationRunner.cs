@@ -1,9 +1,9 @@
-using System.Linq;
-using ui.math;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NEA.components;
 using ui.LatexExt;
+using ui.math;
 
 namespace NEA.math
 {
@@ -37,7 +37,7 @@ namespace NEA.math
 
         public SimplexStep Step;
 
-        public int It = 0;
+        public int It;
         public Fraction[,] Expressions;
         public string[] Vars;
         public (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx) Meta;
@@ -103,8 +103,7 @@ namespace NEA.math
                         {
                             if (IsCompleted())
                                 return new SimplexRunnerOutput(SimplexState.ENDED, this, $"There are no {pos} (unoptimal) column in objective function, and therefore a solution is found");
-                            else
-                                return new SimplexRunnerOutput(SimplexState.FAILED, null, $"Contradictory result: No pivot column can be found but the solution isn't complete");
+                            return new SimplexRunnerOutput(SimplexState.FAILED, null, "Contradictory result: No pivot column can be found but the solution isn't complete");
                         }
                         newRunner.Step = SimplexStep.PICK_PIVOT_ROW;
                         newRunner.Meta.pivotCol = (int)result;

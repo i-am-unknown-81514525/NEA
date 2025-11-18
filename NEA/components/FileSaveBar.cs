@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using ui.components;
 using ui.components.chainExt;
 
@@ -11,7 +13,7 @@ namespace NEA.components
 
         public readonly SingleLineInputField FileNameInput = new SingleLineInputField();
 
-        protected readonly Logger Logger = null;
+        protected readonly Logger Logger;
 
         protected readonly Switcher Switcher = new Switcher();
 
@@ -27,48 +29,48 @@ namespace NEA.components
                 Switcher.SwitchTo(0);
                 return;
             }
-            if (System.IO.File.Exists(filename) && !force)
+            if (File.Exists(filename) && !force)
             {
                 Switcher.SwitchTo(1);
                 return;
             }
             try {
-                System.IO.File.WriteAllText(filename, content);
+                File.WriteAllText(filename, content);
                 Logger.Push($"File '{filename}' saved successfully.");
-            } catch (System.Exception e){
+            } catch (Exception e){
                 Logger.Push($"Error saving file '{filename}': {e.Message}");
             }
             Switcher.SwitchTo(0);
         }
 
-        public FileSaveBar(string info, Logger logger = null, string saveContent = "") : base()
+        public FileSaveBar(string info, Logger logger = null, string saveContent = "")
         {
             Label.text = info;
             Logger = logger;
             SaveContent = saveContent;
             Switcher.Add(
-                new HorizontalGroupComponent()
+                new HorizontalGroupComponent
                 {
                     (Label, info.Length),
                     FileNameInput,
                     (new Button("Save").WithHandler(
-                        (_)=> {
+                        _=> {
                             Save(false);
                         }
                     ), 6)
                 }
             );
             Switcher.Add(
-                new HorizontalGroupComponent()
+                new HorizontalGroupComponent
                 {
                     OverwriteMessage,
                     (new Button("Back").WithHandler(
-                        (_)=> {
+                        _=> {
                             Switcher.SwitchTo(0);
                         }
                     ), 6),
                     (new Button("Save Anyway").WithHandler(
-                        (_)=> {
+                        _=> {
                             Save(true);
                         }
                     ), 13)

@@ -1,6 +1,5 @@
 using NEA.store;
 using ui.components;
-using ui.math;
 
 namespace NEA.components
 {

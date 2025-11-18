@@ -1,3 +1,4 @@
+using System;
 using NEA.math;
 using ui.components;
 using ui.components.chainExt;
@@ -12,22 +13,22 @@ namespace NEA.components
 
         public readonly SimplexTableauInput TableauInput = new SimplexTableauInput();
 
-        public readonly Container OutputContainer = new Container() { new Padding() };
+        public readonly Container OutputContainer = new Container { new Padding() };
 
         public readonly Logger Logger = new Logger().WithForeground<EmptyStore, Logger>(ForegroundColorEnum.RED);
 
-        public TableauPage(Switcher outerSwitcher) : base()
+        public TableauPage(Switcher outerSwitcher)
         {
             OuterSwitcher = outerSwitcher;
-            InnerSwitcher = new Switcher() {
-                new VerticalGroupComponent() {
+            InnerSwitcher = new Switcher {
+                new VerticalGroupComponent {
                     TableauInput,
                     (Logger, 1),
                     (
-                        new HorizontalGroupComponent() {
+                        new HorizontalGroupComponent {
                             new PageSwitcher(outerSwitcher, "Back", 0),
                             new Button("Start").WithHandler(
-                                (_)=> {
+                                _=> {
                                     try {
                                         OutputContainer.Set(
                                             new SimplexPagingOutputContainer(
@@ -41,7 +42,7 @@ namespace NEA.components
                                             )
                                         );
                                     }
-                                    catch(System.Exception e){
+                                    catch(Exception e){
                                         Logger.Push(e.Message);
                                         return;
                                     }

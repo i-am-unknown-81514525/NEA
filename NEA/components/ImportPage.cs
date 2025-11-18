@@ -1,11 +1,11 @@
+using System;
+using NEA.files;
 using NEA.math;
 using ui.components;
 using ui.components.chainExt;
-// using ui.core;
-using NEA.files;
-using ui.utils;
 using ui.fmt;
-using System;
+using ui.utils;
+// using ui.core;
 
 namespace NEA.components
 {
@@ -16,9 +16,9 @@ namespace NEA.components
 
         public readonly SingleLineInputField FilenameInput = new SingleLineInputField();
 
-        public readonly Container OutputContainer = new Container() { new Padding() };
+        public readonly Container OutputContainer = new Container { new Padding() };
 
-        public ImportPage(Switcher outerSwitcher) : base()
+        public ImportPage(Switcher outerSwitcher)
         {
             OuterSwitcher = outerSwitcher;
             Logger logger = new Logger()
@@ -26,20 +26,20 @@ namespace NEA.components
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
                 .WithForeground<EmptyStore, Logger>(ForegroundColorEnum.CYAN)
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
-            InnerSwitcher = new Switcher() {
-                new VerticalGroupComponent() {
+            InnerSwitcher = new Switcher {
+                new VerticalGroupComponent {
                     new Padding(),
-                    (new HorizontalGroupComponent()
+                    (new HorizontalGroupComponent
                     {
                         (new TextLabel("Filename: "), 10),
                         FilenameInput
                     }, 1),
                     (logger, 1),
                     (
-                        new HorizontalGroupComponent() {
+                        new HorizontalGroupComponent {
                             new PageSwitcher(outerSwitcher, "Back", 0),
                             new Button("Import").WithHandler(
-                                (_)=> {
+                                _=> {
                                     try
                                     {
                                         OutputContainer.Set(

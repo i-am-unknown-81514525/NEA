@@ -1,5 +1,6 @@
-using ui.components.chainExt;
+using System;
 using ui.components;
+using ui.components.chainExt;
 using ui.utils;
 
 namespace NEA.components
@@ -23,16 +24,14 @@ namespace NEA.components
             return table;
         }
 
-        public SimplexInputTable() : base() { }
-
         public override void InsertRow(int idx, SplitAmount amount = null)
         {
-            throw new System.InvalidOperationException();
+            throw new InvalidOperationException();
         }
 
         public override void InsertColumn(int idx, SplitAmount amount = null)
         {
-            throw new System.InvalidOperationException();
+            throw new InvalidOperationException();
         }
 
         public override void AddColumn(SplitAmount amount = null)

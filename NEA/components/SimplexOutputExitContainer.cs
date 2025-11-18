@@ -7,16 +7,16 @@ namespace NEA.components
     {
         public SimplexOutputExitContainer((Switcher switcher, int page, string name) menuSwitcher, (Switcher switcher, int page, string name) optionsSwitcher)
         {
-            Add(new HorizontalGroupComponent()
+            Add(new HorizontalGroupComponent
             {
                 new Button(menuSwitcher.name).WithHandler(
-                    (_)=>{
+                    _=>{
                         menuSwitcher.switcher.SwitchTo(menuSwitcher.page);
                         optionsSwitcher.switcher.SwitchTo(optionsSwitcher.page);
                     }
                 ),
                 new Button(optionsSwitcher.name).WithHandler(
-                    (_)=>optionsSwitcher.switcher.SwitchTo(optionsSwitcher.page)
+                    _=>optionsSwitcher.switcher.SwitchTo(optionsSwitcher.page)
                 )
             });
 

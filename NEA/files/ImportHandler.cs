@@ -1,9 +1,8 @@
 using System;
-using System.Text;
-using System.IO;
-using NEA.math;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NEA.math;
 using ui.math;
 
 namespace NEA.files

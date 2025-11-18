@@ -1,11 +1,10 @@
-using ui.components;
-using NEA.math;
-using ui.math;
-using ui.components.chainExt;
-using ui.utils;
-using ui.fmt;
 using System.Linq;
 using NEA.files;
+using NEA.math;
+using ui.components;
+using ui.components.chainExt;
+using ui.fmt;
+using ui.utils;
 
 namespace NEA.components
 {
@@ -51,7 +50,7 @@ namespace NEA.components
             // SingleLineInputField filename_input = new SingleLineInputField();
             Logger.Push(reason);
             Add(
-                new VerticalGroupComponent()
+                new VerticalGroupComponent
                 {
                     (Table = new SimplexOutputTable(runner)),
                     (Logger, 1),
