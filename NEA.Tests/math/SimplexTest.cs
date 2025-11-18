@@ -11,18 +11,20 @@ namespace NEA.Tests.math
     {
 
         [Test]
-        public void LpModelToTableauTest()
+        // 2022 A Level OCR MEI B Further Math Modelling with Algorithms Q5b/c
+        public void LpModelToTableauTest1()
         {
-            using (Assert.EnterMultipleScope())
-            {
-                // 2022 A Level OCR MEI B Further Math Modelling with ALgorithms Q5b/c
-                string q1 = @"MAX 2x + 3y + z
+            string question = @"MAX 2x + 3y + z
 ST
 3x + y + 4z <= 48
 5x + 4y <= 32
 END";
+            SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+            using (Assert.EnterMultipleScope())
+            {
+
                 Assert.That(
-                    ToSimplexRunner.Translate(q1).Expressions,
+                    runner.Expressions,
                     Is.EquivalentTo(
                         new Fraction[,]
                         {
@@ -36,16 +38,84 @@ END";
                         }
                     )
                 );
+
+                Assert.That(
+                    runner.Vars,
+                    Is.EquivalentTo(new [] {"P", "x", "y", "z", "s_1", "s_2"})
+                );
             }
         }
 
         [Test]
-        public void StructuredToTableauTest()
+        // 2022 A Level OCR MEI B Further Math Modelling with Algorithms Q5c/d
+        public void TableauExecution1()
         {
-            // using (Assert.EnterMultipleScope())
-            // {
-            //     Assert.That();
-            // }
+            using (Assert.EnterMultipleScope())
+            {
+                string question = @"MAX 2x + 3y + z
+ST
+3x + y + 4z <= 48
+5x + 4y <= 32
+END";
+                SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+                while (runner.It < 2)
+                {
+                    SimplexRunnerOutput output = runner.Next();
+                    runner = output.Next;
+                }
+
+                Assert.That(
+                    runner.Expressions,
+                    Is.EquivalentTo(
+                        new Fraction[,]
+                        {
+                            {1, 0, 0},
+                            {new Fraction(35, 16), new Fraction(7, 16), new Fraction(5, 4)},
+                            {0, 0, 1},
+                            {0, 1, 0},
+                            {new Fraction(1, 4), new Fraction(1, 4), 0},
+                            {new Fraction(11, 16), new Fraction(-1, 16), new Fraction(1, 4)},
+                            {34, 10, 8}
+                        }
+                    )
+                );
+            }
+        }
+
+        [Test]
+        // 2022 A Level OCR MEI B Further Math Modelling with Algorithms Q5d
+        public void TableauExecution2()
+        {
+            using (Assert.EnterMultipleScope())
+            {
+                string question = @"MAX 2x + 3y + z
+ST
+3x + y + 4z <= 48
+5x + 4y <= 32
+END";
+                SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+                while (runner.It < 1)
+                {
+                    SimplexRunnerOutput output = runner.Next();
+                    runner = output.Next;
+                }
+
+                Assert.That(
+                    runner.Expressions,
+                    Is.EquivalentTo(
+                        new Fraction[,]
+                        {
+                            {1, 0, 0},
+                            {new Fraction(7,4), new Fraction(7,4), new Fraction(5, 4)},
+                            {0, 0, 1},
+                            {-1, 4, 0},
+                            {0, 1, 0},
+                            {new Fraction(3, 4), new Fraction(-1, 4), new Fraction(1, 4)},
+                            {24, 40, 8}
+                        }
+                    )
+                );
+            }
         }
     }
 }
