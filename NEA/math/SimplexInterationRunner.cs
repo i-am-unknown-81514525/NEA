@@ -7,7 +7,7 @@ using ui.LatexExt;
 
 namespace NEA.math
 {
-    public struct SimplexRunnerOutput : ILatex
+    public readonly struct SimplexRunnerOutput : ILatex
     {
         public readonly SimplexState State;
         public readonly SimplexInterationRunner Next;
