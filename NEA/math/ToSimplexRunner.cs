@@ -20,9 +20,9 @@ namespace NEA.math
 
         public Meta(int? artifical, int slack, EqResult result)
         {
-            this.Artifical = artifical;
-            this.Slack = slack;
-            this.Result = result;
+            Artifical = artifical;
+            Slack = slack;
+            Result = result;
         }
     }
 
@@ -355,7 +355,7 @@ namespace NEA.math
                 ui.Debug.DebugStore.AppendLine("Runner is null, cannot run.");
                 return new SimplexRunnerOutput[] { };
             }
-            SimplexInterationRunner current = (SimplexInterationRunner)runner;
+            SimplexInterationRunner current = runner;
             int idx = 0;
             List<SimplexRunnerOutput> results = new List<SimplexRunnerOutput>
             {
@@ -374,7 +374,7 @@ namespace NEA.math
                     else if (output.State == SimplexState.ENDED) ui.Debug.DebugStore.AppendLine("Simplex method completed successfully.");
                     break;
                 }
-                current = (SimplexInterationRunner)output.Next;
+                current = output.Next;
                 idx++;
             }
             return results.ToArray();

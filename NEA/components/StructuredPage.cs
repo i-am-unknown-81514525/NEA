@@ -18,7 +18,7 @@ namespace NEA.components
 
         public StructuredPage(Switcher outerSwitcher) : base()
         {
-            this.OuterSwitcher = outerSwitcher;
+            OuterSwitcher = outerSwitcher;
             InnerSwitcher = new Switcher() {
                 new VerticalGroupComponent() {
                     StructuredInput,

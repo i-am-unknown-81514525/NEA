@@ -15,14 +15,14 @@ namespace NEA.math
 
         public SimplexRunnerOutput(SimplexState state, SimplexInterationRunner next, string reason)
         {
-            this.State = state;
-            this.Next = next;
-            this.Reason = reason;
+            State = state;
+            Next = next;
+            Reason = reason;
         }
 
         public SimplexOutputContainer ToOutputContainer()
         {
-            return new SimplexOutputContainer(State, (SimplexInterationRunner)Next, Reason);
+            return new SimplexOutputContainer(State, Next, Reason);
         }
 
         public string AsLatex()
@@ -53,26 +53,26 @@ namespace NEA.math
             (int pivotCol, int pivotRow, Fraction[] normalised, List<int> artificalIdx)? meta = null,
             SimplexStep step = SimplexStep.PICK_PIVOT_COLUMN)
         {
-            this.Stage = stage;
-            this.Mode = mode;
-            this.Step = step;
-            this.Expressions = expressions.Clone() as Fraction[,];
-            this.Vars = vars.Clone() as string[];
-            this.It = (start is null) ? 0 : start.It;
+            Stage = stage;
+            Mode = mode;
+            Step = step;
+            Expressions = expressions.Clone() as Fraction[,];
+            Vars = vars.Clone() as string[];
+            It = (start is null) ? 0 : start.It;
             if (meta is null)
             {
-                this.Meta = (-1, -1, null, new List<int>());
+                Meta = (-1, -1, null, new List<int>());
             } else
             {
-                this.Meta = ((int, int, Fraction[], List<int>))meta;
+                Meta = ((int, int, Fraction[], List<int>))meta;
             }
             if (start is null)
             {
-                this.Start = this;
+                Start = this;
             }
             else
             {
-                this.Start = start;
+                Start = start;
             }
         }
 
@@ -231,7 +231,7 @@ namespace NEA.math
                                 notArtificalExpr[x, y] = Expressions[notArtifical[x], y + 1];
                             }
                         }
-                        var vars = this.Vars;
+                        var vars = Vars;
                         newRunner.Vars = notArtifical.Take(notArtifical.Length - 1).Select(idx => vars[idx]).ToArray(); // Exclude the last one which is RHS
                         newRunner.Stage = SimplexStage.ONE_STAGE;
                         newRunner.Expressions = notArtificalExpr;
@@ -251,7 +251,7 @@ namespace NEA.math
 
         private int? GetColIdxByMode(SimplexMode mode)
         {
-            var expressions = this.Expressions;
+            var expressions = Expressions;
             var selection = Enumerable.Range(1, expressions.GetLength(0) - 2)
                 .Select(x => (x, expressions[x, 0]))
                 .Select(((int i, Fraction frac) item) => mode == SimplexMode.MAX ? item : (item.i, -item.frac))
@@ -267,7 +267,7 @@ namespace NEA.math
 
         private int? GetRowIdxByMode(int col, SimplexMode mode)
         {
-            var expressions = this.Expressions;
+            var expressions = Expressions;
             var selections = Enumerable.Range(1, expressions.GetLength(1) - 1)
                 .Select(y => (y, expressions[col, y]))
                 // .Select(item => mode == SimplexMode.MAX ? item : (item.y, -item.Item2))
@@ -282,15 +282,15 @@ namespace NEA.math
 
         private bool IsCompleted()
         {
-            var expressions = this.Expressions;
-            var mode = this.Mode;
+            var expressions = Expressions;
+            var mode = Mode;
             return Vars[0] == "P" && Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, 0]).All(value => mode == SimplexMode.MAX ? value >= 0 : value <= 0);
         }
 
         public Dictionary<string, Fraction> Resolve()
         {
             Dictionary<string, Fraction> resolved = new Dictionary<string, Fraction>();
-            var expressions = this.Expressions;
+            var expressions = Expressions;
             if (!IsCompleted())
             {
                 throw new InvalidOperationException();
@@ -317,7 +317,7 @@ namespace NEA.math
 
         public override string ToString()
         {
-            var expressions = this.Expressions;
+            var expressions = Expressions;
             string exprStr = Enumerable.Range(0, expressions.GetLength(1))
                 .Select(y => string.Join(" & ", Enumerable.Range(0, expressions.GetLength(0)).Select(x => expressions[x, y].AsLatex())))
                 .Select(row => $"{{ {row} }}")

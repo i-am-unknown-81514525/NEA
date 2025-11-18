@@ -40,8 +40,8 @@ namespace NEA.components
                 .WithBackground<EmptyStore, Logger>(BackgroundColorEnum.BLACK);
         public SimplexOutputContainer(SimplexState state, SimplexInterationRunner runner, string reason)
         {
-            this.State = state;
-            this.Runner = runner;
+            State = state;
+            Runner = runner;
             string stageName = "ONE";
             if (new[] { SimplexStage.TWO_STAGE_MAX, SimplexStage.TWO_STAGE_MIN }.Contains(runner.Stage))
             {

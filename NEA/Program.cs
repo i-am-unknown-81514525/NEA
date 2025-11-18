@@ -42,7 +42,7 @@ namespace NEA
             app.WithExitHandler<EmptyStore, App>((appObj) =>
             {
                 Console.WriteLine(appObj.Debug_WriteStructure());
-                Console.WriteLine(ui.Debug.DebugStore.ToString());
+                Console.WriteLine(Debug.DebugStore.ToString());
                 Console.WriteLine(tablePage.TableauInput.Table.AsLatex());
             }).Run();
         }

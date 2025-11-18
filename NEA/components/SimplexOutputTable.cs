@@ -47,7 +47,7 @@ namespace NEA.components
 
         public SimplexOutputTable(SimplexInterationRunner runner) : base()
         {
-            this.Runner = runner;
+            Runner = runner;
             Inner.Resize((runner.Expressions.GetLength(0), runner.Expressions.GetLength(1) + 1));
             Inner.WithComponentConstructor(((int x, int y) loc) =>
             {

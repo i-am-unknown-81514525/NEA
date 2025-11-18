@@ -15,7 +15,7 @@ namespace NEA.components
 
         public ComparsionStateStore(math_parser.atom.ComparsionSymbolAtom atom) : base()
         {
-            this.Atom = atom;
+            Atom = atom;
         }
     }
 
@@ -211,7 +211,7 @@ namespace NEA.components
                 }
                 ComparisionStateButton compButton = Inner[Inner.GetSize().x - 2, y] as ComparisionStateButton;
                 SimplexTableauVariableField rhsField = Inner[Inner.GetSize().x - 1, y] as SimplexTableauVariableField;
-                ExprResult expr = new ExprResult(terms) - (ExprResult)(Term)Fraction.Parse(rhsField.content);
+                ExprResult expr = new ExprResult(terms) - (Term)Fraction.Parse(rhsField.content);
                 expressions.Add(new EqResult(expr, compButton.Store.Atom));
             }
             if (comparsion == null)

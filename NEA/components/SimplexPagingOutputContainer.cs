@@ -16,8 +16,8 @@ namespace NEA.components
 
         public SimplexPagingOutputContainer(SimplexRunnerOutput[] outputs, Switcher outerSwitcher, Switcher tableauSwitcher)
         {
-            this.OuterSwitcher = outerSwitcher;
-            this.TableauSwitcher = tableauSwitcher;
+            OuterSwitcher = outerSwitcher;
+            TableauSwitcher = tableauSwitcher;
 
             if (outputs.Length == 0 || outputs.Length == 1)
             {
@@ -101,9 +101,9 @@ namespace NEA.components
                 {
                     (
                         new TextLabel(
-                            string.Join("\n", ((SimplexInterationRunner)outputs[lastIdx].Next).Resolve().Select(p=>$"{p.Key}: {p.Value}"))
-                        ).WithVAlign<EmptyStore, TextLabel>(ui.utils.VerticalAlignment.TOP)
-                        .WithHAlign<EmptyStore, TextLabel>(ui.utils.HorizontalAlignment.LEFT),
+                            string.Join("\n", (outputs[lastIdx].Next).Resolve().Select(p=>$"{p.Key}: {p.Value}"))
+                        ).WithVAlign<EmptyStore, TextLabel>(VerticalAlignment.TOP)
+                        .WithHAlign<EmptyStore, TextLabel>(HorizontalAlignment.LEFT),
                         new Fraction(1, 1)
                     ),
                     (outputLogger, 1),

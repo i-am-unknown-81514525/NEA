@@ -15,7 +15,7 @@ namespace NEA.components
 
         protected readonly Switcher Switcher = new Switcher();
 
-        public string SaveContent = "";
+        public readonly string SaveContent;
 
         protected void Save(bool force)
         {
@@ -44,8 +44,8 @@ namespace NEA.components
         public FileSaveBar(string info, Logger logger = null, string saveContent = "") : base()
         {
             Label.text = info;
-            this.Logger = logger;
-            this.SaveContent = saveContent;
+            Logger = logger;
+            SaveContent = saveContent;
             Switcher.Add(
                 new HorizontalGroupComponent()
                 {

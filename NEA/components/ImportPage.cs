@@ -20,7 +20,7 @@ namespace NEA.components
 
         public ImportPage(Switcher outerSwitcher) : base()
         {
-            this.OuterSwitcher = outerSwitcher;
+            OuterSwitcher = outerSwitcher;
             Logger logger = new Logger()
                 .WithHAlign<EmptyStore, Logger>(HorizontalAlignment.LEFT)
                 .WithVAlign<EmptyStore, Logger>(VerticalAlignment.TOP)
