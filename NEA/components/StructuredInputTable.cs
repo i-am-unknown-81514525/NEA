@@ -67,7 +67,7 @@ namespace NEA.components
             {
                 if (loc.x == 0)
                 {
-                    return new TextLabel("MAX");
+                    return new TextLabel("MAX ");
                 }
                 else if (loc.x == table.GetSize().x - 2)
                 {
@@ -124,7 +124,7 @@ namespace NEA.components
             //     ComponentAt
             // );
             Table table = new Table((1, 1));
-            table.AddColumn(3);
+            table.AddColumn(4);
             table.RemoveColumn(0); // The un-specified size row
             table.AddColumn(); // field
             table.AddColumn(3); // var
