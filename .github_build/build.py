@@ -22,6 +22,7 @@ os.system("rm -rf obj || true")
 os.system("rm -rf bin || true")
 os.system("rm -rf .tmp_build || true")
 tmp_build_dir.mkdir(exist_ok=True)
+os.system("msbuild ../NEA.sln -t:restore")
 status = os.system(f"msbuild ../NEA.sln -maxCpuCount:4 -p:Platform=\"{arch_arg}\" -p:OutputPath=\"{tmp_build_dir.as_posix()}\"") # `-restore` for future me if nuget package is installed
 if status != 0:
     raise ChildProcessError(f"Failed to compile with non-zero status code: {status}")
