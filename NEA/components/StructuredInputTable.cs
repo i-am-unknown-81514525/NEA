@@ -202,7 +202,7 @@ namespace NEA.components
                 Term[] terms = new Term[(Inner.GetSize().x - 5) / 3 + 1];
                 for (int x = 1; x < Inner.GetSize().x - 2; x += 3)
                 {
-                    SimplexTableauVariableField field = Inner[x, y] as SimplexTableauVariableField;
+                    SimplexTableauValueField field = Inner[x, y] as SimplexTableauValueField;
                     TextLabel varLabel = Inner[x + 1, y] as TextLabel;
                     terms[(x - 1) / 3] = new Term(Fraction.Parse(field.content), varLabel.text);
                 }
@@ -212,7 +212,7 @@ namespace NEA.components
                     continue;
                 }
                 ComparisionStateButton compButton = Inner[Inner.GetSize().x - 2, y] as ComparisionStateButton;
-                SimplexTableauVariableField rhsField = Inner[Inner.GetSize().x - 1, y] as SimplexTableauVariableField;
+                SimplexTableauValueField rhsField = Inner[Inner.GetSize().x - 1, y] as SimplexTableauValueField;
                 ExprResult expr = new ExprResult(terms) - (Term)Fraction.Parse(rhsField.content);
                 expressions.Add(new EqResult(expr, compButton.Store.Atom));
             }
