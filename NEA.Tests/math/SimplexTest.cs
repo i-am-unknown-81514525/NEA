@@ -15,10 +15,10 @@ namespace NEA.Tests.math
         public void LpModelToTableauTest1()
         {
             string question = @"MAX 2x + 3y + z
-ST
-3x + y + 4z <= 48
-5x + 4y <= 32
-END";
+            ST
+            3x + y + 4z <= 48
+            5x + 4y <= 32
+            END";
             SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
             using (Assert.EnterMultipleScope())
             {
@@ -53,10 +53,10 @@ END";
             using (Assert.EnterMultipleScope())
             {
                 string question = @"MAX 2x + 3y + z
-ST
-3x + y + 4z <= 48
-5x + 4y <= 32
-END";
+                ST
+                3x + y + 4z <= 48
+                5x + 4y <= 32
+                END";
                 SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
                 while (runner.It < 2)
                 {
@@ -89,10 +89,10 @@ END";
             using (Assert.EnterMultipleScope())
             {
                 string question = @"MAX 2x + 3y + z
-ST
-3x + y + 4z <= 48
-5x + 4y <= 32
-END";
+                ST
+                3x + y + 4z <= 48
+                5x + 4y <= 32
+                END";
                 SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
                 while (runner.It < 1)
                 {
