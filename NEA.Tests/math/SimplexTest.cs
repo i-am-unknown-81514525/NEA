@@ -3,6 +3,7 @@ using NUnit.Framework;
 using ui.math;
 using math_parser;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NEA.Tests.math
 {
@@ -121,7 +122,7 @@ namespace NEA.Tests.math
 
         [Test]
         // Sample Assessment Material A Level OCR MEI B Further Math Modelling with Algorithms Q5/Q5(ii)
-        public void LpModelToTableauTest2()
+        public void TableauExecution3()
         {
             string question = @"MAX 1/3x + 1/2y
 ST
@@ -130,6 +131,7 @@ x + 2y <= 9
 2x + y <= 10
 END";
             SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+            runner = ToSimplexRunner.RunAll(runner).Last().Next;
             using (Assert.EnterMultipleScope())
             {
 
@@ -162,6 +164,72 @@ END";
                 Assert.That(result, Does.ContainKey("x").WithValue((Fraction)4));
                 Assert.That(result, Does.ContainKey("y").WithValue((Fraction)2));
                 Assert.That(result, Does.ContainKey("s_1").WithValue((Fraction)1));
+            }
+        }
+
+         [Test]
+        // Practice Paper Set 1 A Level OCR MEI B Further Math Modelling with Algorithms Q6i/ii
+        public void TableauExecution4()
+        {
+            string question = @"MAX 10x + 15y + 25z
+ST
+x+y+z<=50
+x >= 0.1(x+y+z)
+z<=2x
+END";
+            SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+            runner = ToSimplexRunner.RunAll(runner).Last().Next;
+            using (Assert.EnterMultipleScope())
+            {
+
+                Dictionary<string, Fraction> result = runner.Resolve();
+
+                Assert.That(result, Does.ContainKey("P").WithValue((Fraction)975));
+                Assert.That(result, Does.ContainKey("x").WithValue((Fraction)15));
+                Assert.That(result, Does.ContainKey("y").WithValue((Fraction)5));
+                Assert.That(result, Does.ContainKey("z").WithValue((Fraction)30));
+            }
+        }
+
+
+        [Test]
+        // Practice Paper Set 2 A Level OCR MEI B Further Math Modelling with Algorithms Q1i
+        public void LpModelToTableauTest2()
+        {
+            string question = @"MAX 3x + y + 5z
+ST
+x + y + 3z <= 12
+2x + 3y + z >= 25
+z >= 2
+END";
+            SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
+            using (Assert.EnterMultipleScope())
+            {
+
+                Assert.That(
+                    runner.Expressions,
+                    Is.EquivalentTo(
+                        new Fraction[,]
+                        {
+                            {1, 0, 0, 0, 0},
+                            {0, 1, 0, 0, 0},
+                            {2, -3, 1, 2, 0},
+                            {3,-1 , 1, 3, 0},
+                            {2, -5, 3, 1, 1},
+                            {0, 0, 1, 0, 0},
+                            {-1, 0, 0, -1, 0},
+                            {-1, 0, 0, 0, -1},
+                            {0, 0, 0, 1, 0},
+                            {0, 0, 0, 0, 1},
+                            {27, 0, 12, 25, 2}
+                        }
+                    )
+                );
+
+                Assert.That(
+                    runner.Vars,
+                    Is.EquivalentTo(new [] {"A", "P", "x", "y", "z", "s_1", "s_2", "s_3", "a_1", "a_2"})
+                );
             }
         }
     }
