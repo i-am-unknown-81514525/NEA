@@ -53,6 +53,11 @@ namespace NEA.files
                 throw new ImportFormatException("Invalid format: Variable names must be unique.");
             }
             string[] vars = row0.Take(row0.Length - 1).ToArray(); // remove RHS
+            foreach (string v in row0) {
+                if (!ToSimplexRunner.IsValidVariableName(v)) {
+                    throw new ImportFormatException($"Invalid format: Variable names `{v}` is invalid");
+                }
+            } 
             Fraction[,] expressions = new Fraction[row0.Length, splitted.Length - 1];
             for (int i = 1; i < splitted.Length; i++)
             {
