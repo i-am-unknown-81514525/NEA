@@ -270,7 +270,7 @@ namespace NEA.math
             var selections = Enumerable.Range(1, expressions.GetLength(1) - 1)
                 .Select(y => (y, expressions[col, y]))
                 // .Select(item => mode == SimplexMode.MAX ? item : (item.y, -item.Item2))
-                .Where(item => item.Item2 > 0 && expressions[expressions.GetLength(0) - 1, item.y] / item.Item2 > 0)
+                .Where(item => item.Item2 > 0 && expressions[expressions.GetLength(0) - 1, item.y] / item.Item2 >= 0)
                 .Select(item => (item.y, expressions[expressions.GetLength(0) - 1, item.y] / item.Item2))
                 .OrderBy(idxFrac => idxFrac.Item2)
                 .ToArray();

@@ -4,6 +4,7 @@ using ui.math;
 using math_parser;
 using System.Collections.Generic;
 using System.Linq;
+using NEA.files;
 
 namespace NEA.Tests.math
 {
@@ -124,7 +125,7 @@ namespace NEA.Tests.math
         // Sample Assessment Material AS Level OCR MEI B Further Math Modelling with Algorithms Q5/Q5(ii)
         public void TableauExecution3()
         {
-            // Seemingly the exam paper have done the result in a different way (as manually attempted so some tests have been commented)
+            // Seemingly the exam paper have done the result in a different way (as manually attempted so some tests have been altered)
             string question = @"MAX 1/3x + 1/2y
 ST
 x + 2y <= 9
@@ -172,23 +173,40 @@ END";
         // Practice Paper Set 1 A Level OCR MEI B Further Math Modelling with Algorithms Q6i/ii
         public void TableauExecution4()
         {
-            string question = @"MAX 10x + 15y + 25z
-ST
-x+y+z <= 50
-x >= 0.1(x+y+z)
-z <= 2x
-END";
-            SimplexInterationRunner runner = ToSimplexRunner.Translate(question);
-            runner = ToSimplexRunner.RunAll(runner).Last().Next;
+            string question = @"P;;x;y;z;s_1;s_2;s_3;RHS
+1;5;0;-10;15;0;0;750
+0;1;1;1;1;0;0;50
+0;-2;0;1;0;1;0;0
+0;10;0;10;9;0;1;450";
+            SimplexInterationRunner runner = ImportHandler.ImportWithContent(question);
+            while (runner.It < 1)
+            {
+                SimplexRunnerOutput output = runner.Next();
+                runner = output.Next;
+            }
             using (Assert.EnterMultipleScope())
             {
 
-                Dictionary<string, Fraction> result = runner.Resolve();
-
-                Assert.That(result, Does.ContainKey("P").WithValue((Fraction)975));
-                Assert.That(result, Does.ContainKey("x").WithValue((Fraction)15));
-                Assert.That(result, Does.ContainKey("y").WithValue((Fraction)5));
-                Assert.That(result, Does.ContainKey("z").WithValue((Fraction)30));
+                Assert.That(
+                    runner.Expressions,
+                    Is.EquivalentTo(
+                        new Fraction[,]
+                        {
+                            {1, 0, 0, 0},
+                            {-15, 3, -2, 30},
+                            {0, 1, 0, 0},
+                            {0, 0, 1, 0},
+                            {15, 1, 0, 9},
+                            {10, -1, 1, -10},
+                            {0, 0, 0, 1},
+                            {750, 50, 0, 450}
+                        }
+                    )
+                );
+                Assert.That(
+                    runner.Vars,
+                    Is.EquivalentTo(new [] {"P", "x", "y", "z", "s_1", "s_2", "s_3"})
+                );
             }
         }
 
