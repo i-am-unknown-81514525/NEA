@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NEA")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Barton Peveril IT Services")]
+[assembly: AssemblyCompany("i-am-unknown-81514525")]
 [assembly: AssemblyProduct("NEA")]
-[assembly: AssemblyCopyright("Copyright © Barton Peveril IT Services 2025")]
+[assembly: AssemblyCopyright("Copyright © i-am-unknown-81514525")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
